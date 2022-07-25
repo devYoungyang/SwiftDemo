@@ -1,0 +1,252 @@
+PODS:
+  - Alamofire (5.6.1)
+  - BonMot (6.1.1)
+  - Charts (3.6.0):
+    - Charts/Core (= 3.6.0)
+  - Charts/Core (3.6.0)
+  - CollectionKit (2.4.0):
+    - CollectionKit/Core (= 2.4.0)
+  - CollectionKit/Core (2.4.0)
+  - CryptoSwift (1.4.3)
+  - Differentiator (5.0.0)
+  - DZNEmptyDataSet (1.8.1)
+  - EmptyDataSet-Swift (5.0.0)
+  - ESTabBarController-swift (2.8.0)
+  - FSPagerView (0.8.3)
+  - GKNavigationBarSwift (1.5.0)
+  - HandyJSON (5.0.2)
+  - Hero (1.6.1)
+  - JXPagingView/Paging (2.1.2)
+  - JXSegmentedView (1.3.0)
+  - Kingfisher (6.3.1)
+  - MJRefresh (3.7.5)
+  - Moya (15.0.0):
+    - Moya/Core (= 15.0.0)
+  - Moya/Core (15.0.0):
+    - Alamofire (~> 5.0)
+  - Moya/RxSwift (15.0.0):
+    - Moya/Core
+    - RxSwift (~> 6.0)
+  - "NSObject+Rx (5.2.2)":
+    - RxSwift (~> 6.2)
+  - ObjectMapper (4.2.0)
+  - PKHUD (5.3.0)
+  - ReachabilitySwift (5.0.0)
+  - ReactorKit (3.2.0):
+    - RxSwift (~> 6.0)
+    - WeakMapTable (~> 1.1)
+  - RSKPlaceholderTextView (6.1.0)
+  - RxCocoa (6.5.0):
+    - RxRelay (= 6.5.0)
+    - RxSwift (= 6.5.0)
+  - RxDataSources (5.0.0):
+    - Differentiator (~> 5.0)
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
+  - RxRelay (6.5.0):
+    - RxSwift (= 6.5.0)
+  - RxSwift (6.5.0)
+  - RxSwiftExt (6.0.1):
+    - RxSwiftExt/Core (= 6.0.1)
+    - RxSwiftExt/RxCocoa (= 6.0.1)
+  - RxSwiftExt/Core (6.0.1):
+    - RxSwift (~> 6.0)
+  - RxSwiftExt/RxCocoa (6.0.1):
+    - RxCocoa (~> 6.0)
+    - RxSwiftExt/Core
+  - RxTheme (6.0.0):
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
+  - RxViewController (2.0.0):
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
+  - SDAutoLayout (2.2.1)
+  - SnapKit (5.6.0)
+  - Spring (1.0.6)
+  - Starscream (4.0.4)
+  - SwifterSwift (5.2.0):
+    - SwifterSwift/AppKit (= 5.2.0)
+    - SwifterSwift/CoreAnimation (= 5.2.0)
+    - SwifterSwift/CoreGraphics (= 5.2.0)
+    - SwifterSwift/CoreLocation (= 5.2.0)
+    - SwifterSwift/Dispatch (= 5.2.0)
+    - SwifterSwift/Foundation (= 5.2.0)
+    - SwifterSwift/MapKit (= 5.2.0)
+    - SwifterSwift/SceneKit (= 5.2.0)
+    - SwifterSwift/SpriteKit (= 5.2.0)
+    - SwifterSwift/StoreKit (= 5.2.0)
+    - SwifterSwift/SwiftStdlib (= 5.2.0)
+    - SwifterSwift/UIKit (= 5.2.0)
+  - SwifterSwift/AppKit (5.2.0)
+  - SwifterSwift/CoreAnimation (5.2.0)
+  - SwifterSwift/CoreGraphics (5.2.0)
+  - SwifterSwift/CoreLocation (5.2.0)
+  - SwifterSwift/Dispatch (5.2.0)
+  - SwifterSwift/Foundation (5.2.0)
+  - SwifterSwift/MapKit (5.2.0)
+  - SwifterSwift/SceneKit (5.2.0)
+  - SwifterSwift/SpriteKit (5.2.0)
+  - SwifterSwift/StoreKit (5.2.0)
+  - SwifterSwift/SwiftStdlib (5.2.0)
+  - SwifterSwift/UIKit (5.2.0)
+  - SwiftLint (0.47.1)
+  - SwiftyJSON (5.0.1)
+  - Then (3.0.0)
+  - Tiercel (3.2.5)
+  - Toast-Swift (5.0.1)
+  - WeakMapTable (1.2.0)
+  - YYKit (1.0.9):
+    - YYKit/no-arc (= 1.0.9)
+  - YYKit/no-arc (1.0.9)
+  - ZLPhotoBrowser (4.3.2):
+    - ZLPhotoBrowser/Core (= 4.3.2)
+  - ZLPhotoBrowser/Core (4.3.2)
+
+DEPENDENCIES:
+  - Alamofire
+  - BonMot
+  - Charts
+  - CollectionKit
+  - CryptoSwift (~> 1.4.0)
+  - DZNEmptyDataSet
+  - EmptyDataSet-Swift (~> 5.0.0)
+  - ESTabBarController-swift
+  - FSPagerView
+  - GKNavigationBarSwift
+  - HandyJSON
+  - Hero
+  - JXPagingView/Paging
+  - JXSegmentedView
+  - Kingfisher
+  - MJRefresh
+  - Moya
+  - Moya/RxSwift
+  - "NSObject+Rx"
+  - ObjectMapper
+  - PKHUD (~> 5.0)
+  - ReachabilitySwift
+  - ReactorKit
+  - RSKPlaceholderTextView
+  - RxCocoa
+  - RxDataSources
+  - RxSwift
+  - RxSwiftExt
+  - RxTheme
+  - RxViewController
+  - SDAutoLayout
+  - SnapKit
+  - Spring (from `https://github.com/MengTo/Spring.git`)
+  - Starscream (~> 4.0.0)
+  - SwifterSwift
+  - SwiftLint
+  - SwiftyJSON
+  - Then
+  - Tiercel
+  - Toast-Swift (~> 5.0.1)
+  - YYKit
+  - ZLPhotoBrowser
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - BonMot
+    - Charts
+    - CollectionKit
+    - CryptoSwift
+    - Differentiator
+    - DZNEmptyDataSet
+    - EmptyDataSet-Swift
+    - ESTabBarController-swift
+    - FSPagerView
+    - GKNavigationBarSwift
+    - HandyJSON
+    - Hero
+    - JXPagingView
+    - JXSegmentedView
+    - Kingfisher
+    - MJRefresh
+    - Moya
+    - "NSObject+Rx"
+    - ObjectMapper
+    - PKHUD
+    - ReachabilitySwift
+    - ReactorKit
+    - RSKPlaceholderTextView
+    - RxCocoa
+    - RxDataSources
+    - RxRelay
+    - RxSwift
+    - RxSwiftExt
+    - RxTheme
+    - RxViewController
+    - SDAutoLayout
+    - SnapKit
+    - Starscream
+    - SwifterSwift
+    - SwiftLint
+    - SwiftyJSON
+    - Then
+    - Tiercel
+    - Toast-Swift
+    - WeakMapTable
+    - YYKit
+    - ZLPhotoBrowser
+
+EXTERNAL SOURCES:
+  Spring:
+    :git: https://github.com/MengTo/Spring.git
+
+CHECKOUT OPTIONS:
+  Spring:
+    :commit: 50d92a5b9e08848387ae95bf44c6ad20834f7083
+    :git: https://github.com/MengTo/Spring.git
+
+SPEC CHECKSUMS:
+  Alamofire: 87bd8c952f9a4454320fce00d9cc3de57bcadaf5
+  BonMot: 42c7134bab1da1d1d8805b02113635c12f0200cc
+  Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
+  CollectionKit: 8f01e7629185bb81072c4aa734d105df5c2d1c8b
+  CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
+  Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
+  DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
+  EmptyDataSet-Swift: eb382c0c87a2d9c678077385a595cec52da38171
+  ESTabBarController-swift: 05593a6ad64700b03c0eb60ff625916370aa4136
+  FSPagerView: 670405b2f18e2a87fa37f20b00de783e562c25a8
+  GKNavigationBarSwift: 70d443ec833868b4787a167d2925d2b619caaf5b
+  HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
+  Hero: 215865ba3ae41dd9bb08cd6c60a645529c6fc94b
+  JXPagingView: 90924b364a2ff7e94db534fad1fa50925ff69ee4
+  JXSegmentedView: fec0d335355b6e019c494fe2e030bde8a36d2df6
+  Kingfisher: 016c8b653a35add51dd34a3aba36b580041acc74
+  MJRefresh: fdf5e979eb406a0341468932d1dfc8b7f9fce961
+  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  "NSObject+Rx": 61cf1f7306a73dcef8b36649198af0813ec18dfd
+  ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
+  PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  ReactorKit: e8b11d6b9c415405f381669b095c154a05b59eca
+  RSKPlaceholderTextView: 52f26e643b6f9bbf16f45cd2bbe2181b6dfe090c
+  RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
+  RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
+  RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
+  RxSwiftExt: d61c4b9b06e0a448041b1c659e0f1b5c5a035afc
+  RxTheme: be60cb14e0544b3cbd574cc37fed35ba9d61aa1f
+  RxViewController: 56486fa0afd629a1d6b5ba077f3b8cd9dc31b5d2
+  SDAutoLayout: 8bf6b3bbc8b01f775d4defbb4fda2ace805461be
+  SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
+  Spring: 3d113f14575ef79aec9c5f906dfa4f5001c03254
+  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
+  SwifterSwift: 334181863c416882d97b7a60c05054d9e4d799e2
+  SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
+  SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
+  Then: 844265ae87834bbe1147d91d5d41a404da2ec27d
+  Tiercel: c0a73f876a72800333b15f4e7e48791f4ad21e90
+  Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
+  WeakMapTable: 05c694ce8439a7a9ebabb56187287a63c57673d6
+  YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
+  ZLPhotoBrowser: fbd03a797675cca8f7a85e0f539eef28eb742bf6
+
+PODFILE CHECKSUM: 0d1d8a0765d28567cf96ac935fa8bd44a938e53c
+
+COCOAPODS: 1.11.2
