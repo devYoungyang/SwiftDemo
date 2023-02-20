@@ -174,6 +174,10 @@ public class ZLPhotoConfiguration: NSObject {
     /// Allow select full image. Defaults to true.
     @objc public var allowSelectOriginal = true
     
+    /// Always return the original photo.
+    /// - warning: Only valid when `allowSelectOriginal = false`, Defaults to false.
+    @objc public var alwaysRequestOriginal = false
+    
     /// Allow access to the preview large image interface (That is, whether to allow access to the large image interface after clicking the thumbnail image). Defaults to true.
     @objc public var allowPreviewPhotos = true
     
@@ -287,9 +291,6 @@ public class ZLPhotoConfiguration: NSObject {
     
     /// The configuration for camera.
     @objc public var cameraConfiguration = ZLCameraConfiguration()
-    
-    /// Hud style. Defaults to lightBlur.
-    @objc public var hudStyle: ZLProgressHUD.HUDStyle = .lightBlur
     
     /// This block will be called before selecting an image, the developer can first determine whether the asset is allowed to be selected.
     /// Only control whether it is allowed to be selected, and will not affect the selection logic in the framework.

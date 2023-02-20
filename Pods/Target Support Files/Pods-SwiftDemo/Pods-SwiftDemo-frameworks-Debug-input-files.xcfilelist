@@ -1,7 +1,7 @@
 ${PODS_ROOT}/Target Support Files/Pods-SwiftDemo/Pods-SwiftDemo-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
+${BUILT_PRODUCTS_DIR}/AttributedString/AttributedString.framework
 ${BUILT_PRODUCTS_DIR}/BonMot/BonMot.framework
-${BUILT_PRODUCTS_DIR}/Charts/Charts.framework
 ${BUILT_PRODUCTS_DIR}/CollectionKit/CollectionKit.framework
 ${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework
 ${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework
@@ -12,6 +12,7 @@ ${BUILT_PRODUCTS_DIR}/FSPagerView/FSPagerView.framework
 ${BUILT_PRODUCTS_DIR}/GKNavigationBarSwift/GKNavigationBarSwift.framework
 ${BUILT_PRODUCTS_DIR}/HandyJSON/HandyJSON.framework
 ${BUILT_PRODUCTS_DIR}/Hero/Hero.framework
+${BUILT_PRODUCTS_DIR}/JKSwiftExtension/JKSwiftExtension.framework
 ${BUILT_PRODUCTS_DIR}/JXPagingView/JXPagingView.framework
 ${BUILT_PRODUCTS_DIR}/JXSegmentedView/JXSegmentedView.framework
 ${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework
@@ -32,13 +33,14 @@ ${BUILT_PRODUCTS_DIR}/RxTheme/RxTheme.framework
 ${BUILT_PRODUCTS_DIR}/RxViewController/RxViewController.framework
 ${BUILT_PRODUCTS_DIR}/SDAutoLayout/SDAutoLayout.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework
-${BUILT_PRODUCTS_DIR}/Spring/Spring.framework
 ${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework
+${BUILT_PRODUCTS_DIR}/SwiftDate/SwiftDate.framework
 ${BUILT_PRODUCTS_DIR}/SwifterSwift/SwifterSwift.framework
 ${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework
 ${BUILT_PRODUCTS_DIR}/Then/Then.framework
 ${BUILT_PRODUCTS_DIR}/Tiercel/Tiercel.framework
 ${BUILT_PRODUCTS_DIR}/Toast-Swift/Toast_Swift.framework
+${BUILT_PRODUCTS_DIR}/TweeTextField/TweeTextField.framework
 ${BUILT_PRODUCTS_DIR}/WeakMapTable/WeakMapTable.framework
 ${BUILT_PRODUCTS_DIR}/YYKit/YYKit.framework
 ${BUILT_PRODUCTS_DIR}/ZLPhotoBrowser/ZLPhotoBrowser.framework

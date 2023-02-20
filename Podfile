@@ -10,7 +10,7 @@ target 'SwiftDemo' do
 pod 'SwifterSwift'   # 扩展
 pod 'SwiftyJSON'    # json转model
 pod 'Alamofire'     #网络请求
-pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'  # 动画
+#pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'  # 动画
 pod 'RxSwift'    # rx系列
 pod 'RxCocoa'   # rx系列
 pod 'SwiftLint'   #静态检测
@@ -44,11 +44,14 @@ pod 'FSPagerView'  # 轮播图
 pod 'Starscream', '~> 4.0.0'
 pod 'Tiercel'   # 下载
 pod 'CryptoSwift', '~> 1.4.0'   # 加密
-pod 'Charts'   #  画图
+#pod 'Charts'   #  画图
 pod 'PKHUD', '~> 5.0'
 pod 'CollectionKit'
 pod 'RSKPlaceholderTextView'
 pod 'ZLPhotoBrowser'
 pod 'GKNavigationBarSwift'
-pod 'RxWebKit'
+#pod 'RxWebKit'
+pod 'SwiftDate'
+pod 'JKSwiftExtension'
+pod 'TweeTextField'
 end

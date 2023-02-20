@@ -43,7 +43,7 @@ extension ZLClipImageViewController {
 class ZLClipImageViewController: UIViewController {
     private static let bottomToolViewH: CGFloat = 90
     
-    private static let clipRatioItemSize: CGSize = .init(width: 60, height: 70)
+    private static let clipRatioItemSize = CGSize(width: 60, height: 70)
     
     /// 取消裁剪时动画frame
     private var cancelClipAnimateFrame: CGRect = .zero
@@ -116,13 +116,13 @@ class ZLClipImageViewController: UIViewController {
     
     private lazy var bottomToolLineView: UIView = {
         let view = UIView()
-        view.backgroundColor = zlRGB(240, 240, 240)
+        view.backgroundColor = .zl.rgba(240, 240, 240)
         return view
     }()
     
     private lazy var cancelBtn: ZLEnlargeButton = {
         let btn = ZLEnlargeButton(type: .custom)
-        btn.setImage(getImage("zl_close"), for: .normal)
+        btn.setImage(.zl.getImage("zl_close"), for: .normal)
         btn.adjustsImageWhenHighlighted = false
         btn.enlargeInset = 20
         btn.addTarget(self, action: #selector(cancelBtnClick), for: .touchUpInside)
@@ -141,7 +141,7 @@ class ZLClipImageViewController: UIViewController {
     
     lazy var doneBtn: ZLEnlargeButton = {
         let btn = ZLEnlargeButton(type: .custom)
-        btn.setImage(getImage("zl_right"), for: .normal)
+        btn.setImage(.zl.getImage("zl_right"), for: .normal)
         btn.adjustsImageWhenHighlighted = false
         btn.enlargeInset = 20
         btn.addTarget(self, action: #selector(doneBtnClick), for: .touchUpInside)
@@ -150,7 +150,7 @@ class ZLClipImageViewController: UIViewController {
     
     private lazy var rotateBtn: ZLEnlargeButton = {
         let btn = ZLEnlargeButton(type: .custom)
-        btn.setImage(getImage("zl_rotateimage"), for: .normal)
+        btn.setImage(.zl.getImage("zl_rotateimage"), for: .normal)
         btn.adjustsImageWhenHighlighted = false
         btn.enlargeInset = 20
         btn.addTarget(self, action: #selector(rotateBtnClick), for: .touchUpInside)
@@ -169,7 +169,7 @@ class ZLClipImageViewController: UIViewController {
         view.backgroundColor = .clear
         view.isHidden = clipRatios.count <= 1
         view.showsHorizontalScrollIndicator = false
-        ZLImageClipRatioCell.zl_register(view)
+        ZLImageClipRatioCell.zl.register(view)
         return view
     }()
     
@@ -235,7 +235,7 @@ class ZLClipImageViewController: UIViewController {
     
     deinit {
         zl_debugPrint("ZLClipImageViewController deinit")
-        self.cleanTimer()
+        cleanTimer()
     }
     
     init(image: UIImage, editRect: CGRect?, angle: CGFloat = 0, selectRatio: ZLImageClipRatio?) {
@@ -244,11 +244,11 @@ class ZLClipImageViewController: UIViewController {
         self.editRect = editRect ?? .zero
         self.angle = angle
         if angle == -90 {
-            editImage = image.rotate(orientation: .left)
+            editImage = image.zl.rotate(orientation: .left)
         } else if self.angle == -180 {
-            editImage = image.rotate(orientation: .down)
+            editImage = image.zl.rotate(orientation: .down)
         } else if self.angle == -270 {
-            editImage = image.rotate(orientation: .right)
+            editImage = image.zl.rotate(orientation: .right)
         } else {
             editImage = image
         }
@@ -338,7 +338,7 @@ class ZLClipImageViewController: UIViewController {
         let toolBtnH: CGFloat = 25
         let toolBtnY = (ZLClipImageViewController.bottomToolViewH - toolBtnH) / 2 - 10
         cancelBtn.frame = CGRect(x: 30, y: toolBtnY, width: toolBtnH, height: toolBtnH)
-        let revertBtnW = localLanguageTextValue(.revert).boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: toolBtnH)).width + 20
+        let revertBtnW = localLanguageTextValue(.revert).zl.boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: toolBtnH)).width + 20
         revertBtn.frame = CGRect(x: (view.bounds.width - revertBtnW) / 2, y: toolBtnY, width: revertBtnW, height: toolBtnH)
         doneBtn.frame = CGRect(x: view.bounds.width - 30 - toolBtnH, y: toolBtnY, width: toolBtnH, height: toolBtnH)
         
@@ -389,7 +389,7 @@ class ZLClipImageViewController: UIViewController {
         } else {
             size = CGSize(width: fixLength, height: fixLength / ratio)
         }
-        thumbnailImage = editImage.resize_vI(size)
+        thumbnailImage = editImage.zl.resize_vI(size)
     }
     
     private func calculateClipRect() {
@@ -565,14 +565,14 @@ class ZLClipImageViewController: UIViewController {
             // 将edit rect转换为相对edit image的rect
             let rect = convertClipRectToEditImageRect()
             // 旋转图片
-            editImage = editImage.rotate(orientation: .left)
+            editImage = editImage.zl.rotate(orientation: .left)
             // 将rect进行旋转，转换到相对于旋转后的edit image的rect
             editRect = CGRect(x: rect.minY, y: editImage.size.height - rect.minX - rect.width, width: rect.height, height: rect.width)
         } else {
             // 其他比例的裁剪框，旋转后都重置edit rect
             
             // 旋转图片
-            editImage = editImage.rotate(orientation: .left)
+            editImage = editImage.zl.rotate(orientation: .left)
             calculateClipRect()
         }
         
@@ -667,8 +667,8 @@ class ZLClipImageViewController: UIViewController {
         let originFrame = clipOriginFrame
         
         var newPoint = point
-        newPoint.x = max(self.maxClipFrame.minX, newPoint.x)
-        newPoint.y = max(self.maxClipFrame.minY, newPoint.y)
+        newPoint.x = max(maxClipFrame.minX, newPoint.x)
+        newPoint.y = max(maxClipFrame.minY, newPoint.y)
         
         let diffX = ceil(newPoint.x - beginPanPoint.x)
         let diffY = ceil(newPoint.y - beginPanPoint.y)
@@ -816,17 +816,16 @@ class ZLClipImageViewController: UIViewController {
         }
     }
     
-    private func endEditing() {
+    @objc private func endEditing() {
         overlayView.isEditing = false
         moveClipContentToCenter()
     }
     
     private func startTimer() {
         cleanTimer()
-        resetTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false, block: { _ in
-            self.cleanTimer()
-            self.endEditing()
-        })
+        // TODO: 换target写法
+        resetTimer = Timer.scheduledTimer(timeInterval: 0.8, target: ZLWeakProxy(target: self), selector: #selector(endEditing), userInfo: nil, repeats: false)
+        RunLoop.current.add(resetTimer!, forMode: .common)
     }
     
     private func cleanTimer() {
@@ -879,7 +878,7 @@ class ZLClipImageViewController: UIViewController {
     
     private func clipImage() -> (clipImage: UIImage, editRect: CGRect) {
         let frame = convertClipRectToEditImageRect()
-        let clipImage = editImage.clipImage(angle: 0, editRect: frame, isCircle: selectedRatio.isCircle) ?? editImage
+        let clipImage = editImage.zl.clipImage(angle: 0, editRect: frame, isCircle: selectedRatio.isCircle) ?? editImage
         return (clipImage, frame)
     }
     
@@ -929,15 +928,15 @@ extension ZLClipImageViewController: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLImageClipRatioCell.zl_identifier(), for: indexPath) as! ZLImageClipRatioCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLImageClipRatioCell.zl.identifier, for: indexPath) as! ZLImageClipRatioCell
         
         let ratio = clipRatios[indexPath.row]
         cell.configureCell(image: thumbnailImage ?? editImage, ratio: ratio)
         
         if ratio == selectedRatio {
-            cell.titleLabel.textColor = .white
+            cell.titleLabel.textColor = .zl.imageEditorToolTitleTintColor
         } else {
-            cell.titleLabel.textColor = zlRGB(160, 160, 160)
+            cell.titleLabel.textColor = .zl.imageEditorToolTitleNormalColor
         }
         
         return cell
@@ -1018,7 +1017,7 @@ class ZLImageClipRatioCell: UICollectionViewCell {
     
     lazy var titleLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: bounds.height - 15, width: bounds.width, height: 12))
-        label.font = getFont(12)
+        label.font = .zl.font(ofSize: 12)
         label.textColor = .white
         label.textAlignment = .center
         label.layer.shadowColor = UIColor.black.withAlphaComponent(0.3).cgColor
@@ -1127,15 +1126,19 @@ class ZLClipOverlayView: UIView {
     
     var isCircle = false {
         didSet {
-            if oldValue != isCircle {
-                setNeedsDisplay()
+            guard oldValue != isCircle else {
+                return
             }
+            setNeedsDisplay()
         }
     }
     
     var isEditing = false {
         didSet {
-            self.setNeedsDisplay()
+            guard isCircle else {
+                return
+            }
+            setNeedsDisplay()
         }
     }
     

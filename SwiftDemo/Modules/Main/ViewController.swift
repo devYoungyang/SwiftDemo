@@ -4,7 +4,7 @@
 //
 //  Created by Yang on 2021/2/25.
 //
-
+import JKSwiftExtension
 import UIKit
 
 class ViewController: UIViewController {
@@ -13,10 +13,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         view.backgroundColor = UIColor.white
-
         let p = Person.init(name: "", age: 16)
         p?.address = ""
-//        p?.isMan
+        
+        
     }
 
 }

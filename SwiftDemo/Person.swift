@@ -25,13 +25,15 @@ class Person: NSObject, BaseProtocol {
 
     var address: String {
         get {
-            return String.init("HAHA")
+            return String.init("上海")
         }
-        set {
-
+        set{
+            
         }
     }
-
+//    class var weight: Float
+//    static var height: Float
+    
     var name: String
     var age: Int
     init?(name: String, age: Int) {

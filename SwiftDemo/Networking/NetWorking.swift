@@ -13,7 +13,7 @@ import RxSwift
 var baseUrlConfig: BaseUrlType = .dev
 
 enum BaseUrlType: String {
-    case dev = "http://192.168.28.222"    /**     开发环境     */
+    case dev = "http://192.168.31.224"    /**     开发环境     */
     case pub = "pub.com"    /**     线上环境    */
     case local = "localhost"    /**     本地      */
 }

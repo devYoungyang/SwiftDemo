@@ -4,7 +4,8 @@
 //
 //  Created by Yang on 2021/2/25.
 //
-import Spring
+import HealthKit
+
 import SwifterSwift
 import RxViewController
 import ReactorKit
@@ -90,14 +91,14 @@ class HomeViewController: BaseViewController, UITableViewDelegate, View {
         self.reactor?.action.onNext(.getGoodsList(operation))
     }
     @objc func btnClicked() {
-        let webVC = WebViewController()
-        webVC.url = "https://www.baidu.com"
+//        let webVC = WebViewController()
+//        webVC.url = "https://www.baidu.com"
         let goodsVC = GoodsDetailViewController()
         goodsVC.text = "详情"
-        self.navigationController?.pushViewController(webVC)
+        self.navigationController?.pushViewController(LambdaViewController())
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.navigationController?.pushViewController(DetailViewController.init())
+        self.navigationController?.pushViewController(GoodsDetailViewController.init())
         tableView.deselectRow(at: indexPath, animated: true)
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

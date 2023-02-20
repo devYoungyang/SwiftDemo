@@ -27,12 +27,11 @@
 import UIKit
 import Accelerate
 
-/// https://github.com/kiritmodi2702/GIF-Swift
-
 // MARK: data 转 gif image
 
-extension UIImage {
-    class func zl_animateGifImage(data: Data) -> UIImage? {
+public extension ZLPhotoBrowserWrapper where Base: UIImage {
+    /// https://github.com/kiritmodi2702/GIF-Swift
+    static func animateGifImage(data: Data) -> UIImage? {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
             return nil
         }
@@ -43,20 +42,6 @@ extension UIImage {
         if count <= 1 {
             animateImage = UIImage(data: data)
         } else {
-//            var images: [UIImage] = []
-//            var duration: Double = 0
-//
-//            for i in 0..<count {
-//                if let image = CGImageSourceCreateImageAtIndex(source, i, nil) {
-//                    images.append(UIImage(cgImage: image, scale: UIScreen.main.scale, orientation: .up))
-//                }
-//                duration += UIImage.zl_delayForImageAtIndex(i, source: source)
-//            }
-//            if duration == 0 {
-//                duration = (1.0 / 10.0) * Double(count)
-//            }
-//            animateImage = UIImage.animatedImage(with: images, duration: duration)
-            
             var images = [CGImage]()
             var delays = [Int]()
 
@@ -65,7 +50,7 @@ extension UIImage {
                     images.append(image)
                 }
 
-                let delaySeconds = UIImage.zl_delayForImageAtIndex(
+                let delaySeconds = delayForImageAtIndex(
                     Int(i),
                     source: source
                 )
@@ -82,7 +67,7 @@ extension UIImage {
                 return sum
             }()
 
-            let gcd = zl_gcdForArray(delays)
+            let gcd = gcdForArray(delays)
             var frames = [UIImage]()
 
             var frame: UIImage
@@ -105,7 +90,7 @@ extension UIImage {
         return animateImage
     }
     
-    class func zl_delayForImageAtIndex(_ index: Int, source: CGImageSource!) -> Double {
+    private static func delayForImageAtIndex(_ index: Int, source: CGImageSource!) -> Double {
         var delay = 0.1
         
         let cfProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil)
@@ -147,7 +132,7 @@ extension UIImage {
         return delay
     }
     
-    class func zl_gcdForArray(_ array: [Int]) -> Int {
+    private static func gcdForArray(_ array: [Int]) -> Int {
         if array.isEmpty {
             return 1
         }
@@ -155,13 +140,13 @@ extension UIImage {
         var gcd = array[0]
         
         for val in array {
-            gcd = UIImage.zl_gcdForPair(val, gcd)
+            gcd = gcdForPair(val, gcd)
         }
         
         return gcd
     }
     
-    class func zl_gcdForPair(_ a1: Int?, _ b1: Int?) -> Int {
+    private static func gcdForPair(_ a1: Int?, _ b1: Int?) -> Int {
         var a = a1
         var b = b1
         if b == nil || a == nil {
@@ -194,62 +179,72 @@ extension UIImage {
     }
 }
 
-extension UIImage {
-    // 修复转向
+// MARK: image edit
+
+public extension ZLPhotoBrowserWrapper where Base: UIImage {
+    /// 修复转向
     func fixOrientation() -> UIImage {
-        if imageOrientation == .up {
-            return self
+        if base.imageOrientation == .up {
+            return base
         }
         
         var transform = CGAffineTransform.identity
         
-        switch imageOrientation {
+        switch base.imageOrientation {
         case .down, .downMirrored:
-            transform = CGAffineTransform(translationX: size.width, y: size.height)
+            transform = CGAffineTransform(translationX: width, y: height)
             transform = transform.rotated(by: .pi)
         case .left, .leftMirrored:
-            transform = CGAffineTransform(translationX: size.width, y: 0)
+            transform = CGAffineTransform(translationX: width, y: 0)
             transform = transform.rotated(by: CGFloat.pi / 2)
         case .right, .rightMirrored:
-            transform = CGAffineTransform(translationX: 0, y: size.height)
+            transform = CGAffineTransform(translationX: 0, y: height)
             transform = transform.rotated(by: -CGFloat.pi / 2)
         default:
             break
         }
         
-        switch imageOrientation {
+        switch base.imageOrientation {
         case .upMirrored, .downMirrored:
-            transform = transform.translatedBy(x: size.width, y: 0)
+            transform = transform.translatedBy(x: width, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
         case .leftMirrored, .rightMirrored:
-            transform = transform.translatedBy(x: size.height, y: 0)
+            transform = transform.translatedBy(x: height, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
         default:
             break
         }
         
-        guard let ci = cgImage, let colorSpace = ci.colorSpace else {
-            return self
+        guard let cgImage = base.cgImage, let colorSpace = cgImage.colorSpace else {
+            return base
         }
-        let context = CGContext(data: nil, width: Int(size.width), height: Int(size.height), bitsPerComponent: ci.bitsPerComponent, bytesPerRow: 0, space: colorSpace, bitmapInfo: ci.bitmapInfo.rawValue)
+        let context = CGContext(
+            data: nil,
+            width: Int(width),
+            height: Int(height),
+            bitsPerComponent: cgImage.bitsPerComponent,
+            bytesPerRow: 0,
+            space: colorSpace,
+            bitmapInfo: cgImage.bitmapInfo.rawValue
+        )
         context?.concatenate(transform)
-        switch imageOrientation {
+        switch base.imageOrientation {
         case .left, .leftMirrored, .right, .rightMirrored:
-            context?.draw(ci, in: CGRect(x: 0, y: 0, width: size.height, height: size.width))
+            context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: height, height: width))
         default:
-            context?.draw(ci, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+            context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         }
         
-        guard let newCgimg = context?.makeImage() else {
-            return self
+        guard let newCgImage = context?.makeImage() else {
+            return base
         }
-        return UIImage(cgImage: newCgimg)
+        return UIImage(cgImage: newCgImage)
     }
 
-    // 旋转方向
+    /// 旋转方向
     func rotate(orientation: UIImage.Orientation) -> UIImage {
-        guard let imagRef = cgImage else {
-            return self
+        guard let imagRef = base.cgImage else {
+            return base
         }
         let rect = CGRect(origin: .zero, size: CGSize(width: CGFloat(imagRef.width), height: CGFloat(imagRef.height)))
         
@@ -259,7 +254,7 @@ extension UIImage {
         
         switch orientation {
         case .up:
-            return self
+            return base
         case .upMirrored:
             transform = transform.translatedBy(x: rect.width, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
@@ -287,7 +282,7 @@ extension UIImage {
             transform = transform.scaledBy(x: -1, y: 1)
             transform = transform.rotated(by: CGFloat.pi / 2)
         @unknown default:
-            return self
+            return base
         }
         
         UIGraphicsBeginImageContext(bnds.size)
@@ -305,7 +300,7 @@ extension UIImage {
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return newImage ?? self
+        return newImage ?? base
     }
     
     func swapRectWidthAndHeight(_ rect: CGRect) -> CGRect {
@@ -316,11 +311,11 @@ extension UIImage {
     }
     
     func rotate(degress: CGFloat) -> UIImage {
-        guard let cgImg = cgImage else {
-            return self
+        guard degress != 0, let cgImage = base.cgImage else {
+            return base
         }
         
-        let rotatedViewBox = UIView(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        let rotatedViewBox = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         let t = CGAffineTransform(rotationAngle: degress)
         rotatedViewBox.transform = t
         let rotatedSize = rotatedViewBox.frame.size
@@ -332,29 +327,30 @@ extension UIImage {
         bitmap?.rotate(by: degress)
         bitmap?.scaleBy(x: 1.0, y: -1.0)
         
-        bitmap?.draw(cgImg, in: CGRect(x: -size.width / 2, y: -size.height / 2, width: size.width, height: size.height))
+        bitmap?.draw(cgImage, in: CGRect(x: -width / 2, y: -height / 2, width: width, height: height))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return newImage ?? self
+        return newImage ?? base
     }
     
-    // 加马赛克
+    /// 加马赛克
     func mosaicImage() -> UIImage? {
-        guard let currCgImage = cgImage else {
+        guard let cgImage = base.cgImage else {
             return nil
         }
         
-        let currCiImage = CIImage(cgImage: currCgImage)
+        let scale = 8 * width / UIScreen.main.bounds.width
+        let currCiImage = CIImage(cgImage: cgImage)
         let filter = CIFilter(name: "CIPixellate")
         filter?.setValue(currCiImage, forKey: kCIInputImageKey)
-        filter?.setValue(20, forKey: kCIInputScaleKey)
+        filter?.setValue(scale, forKey: kCIInputScaleKey)
         guard let outputImage = filter?.outputImage else { return nil }
         
         let context = CIContext()
         
-        if let cgImg = context.createCGImage(outputImage, from: CGRect(origin: .zero, size: size)) {
-            return UIImage(cgImage: cgImg)
+        if let cgImage = context.createCGImage(outputImage, from: CGRect(origin: .zero, size: base.size)) {
+            return UIImage(cgImage: cgImage)
         } else {
             return nil
         }
@@ -364,8 +360,8 @@ extension UIImage {
         if size.width <= 0 || size.height <= 0 {
             return nil
         }
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        draw(in: CGRect(origin: .zero, size: size))
+        UIGraphicsBeginImageContextWithOptions(size, false, base.scale)
+        base.draw(in: CGRect(origin: .zero, size: size))
         let temp = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return temp
@@ -373,7 +369,7 @@ extension UIImage {
     
     /// Processing speed is better than resize(:) method
     func resize_vI(_ size: CGSize) -> UIImage? {
-        guard let cgImage = cgImage else { return nil }
+        guard let cgImage = base.cgImage else { return nil }
         
         var format = vImage_CGImageFormat(
             bitsPerComponent: 8,
@@ -417,20 +413,20 @@ extension UIImage {
         guard error == kvImageNoError else { return nil }
         
         // create a UIImage
-        return UIImage(cgImage: destCGImage, scale: scale, orientation: imageOrientation)
+        return UIImage(cgImage: destCGImage, scale: base.scale, orientation: base.imageOrientation)
     }
     
     func toCIImage() -> CIImage? {
-        var ci = ciImage
-        if ci == nil, let cg = cgImage {
-            ci = CIImage(cgImage: cg)
+        var ciImage = base.ciImage
+        if ciImage == nil, let cgImage = base.cgImage {
+            ciImage = CIImage(cgImage: cgImage)
         }
-        return ci
+        return ciImage
     }
     
     func clipImage(angle: CGFloat, editRect: CGRect, isCircle: Bool) -> UIImage? {
         let a = ((Int(angle) % 360) - 360) % 360
-        var newImage = self
+        var newImage: UIImage = base
         if a == -90 {
             newImage = rotate(orientation: .left)
         } else if a == -180 {
@@ -477,17 +473,7 @@ extension UIImage {
     }
 }
 
-extension CIImage {
-    func toUIImage() -> UIImage? {
-        let context = CIContext()
-        guard let cgImage = context.createCGImage(self, from: extent) else {
-            return nil
-        }
-        return UIImage(cgImage: cgImage)
-    }
-}
-
-extension UIImage {
+public extension ZLPhotoBrowserWrapper where Base: UIImage {
     /// 调整图片亮度、对比度、饱和度
     /// - Parameters:
     ///   - brightness: value in [-1, 1]
@@ -495,7 +481,7 @@ extension UIImage {
     ///   - saturation: value in [-1, 1]
     func adjust(brightness: Float, contrast: Float, saturation: Float) -> UIImage? {
         guard let ciImage = toCIImage() else {
-            return self
+            return base
         }
         
         let filter = CIFilter(name: "CIColorControls")
@@ -504,12 +490,12 @@ extension UIImage {
         filter?.setValue(ZLEditImageConfiguration.AdjustTool.contrast.filterValue(contrast), forKey: ZLEditImageConfiguration.AdjustTool.contrast.key)
         filter?.setValue(ZLEditImageConfiguration.AdjustTool.saturation.filterValue(saturation), forKey: ZLEditImageConfiguration.AdjustTool.saturation.key)
         let outputCIImage = filter?.outputImage
-        return outputCIImage?.toUIImage()
+        return outputCIImage?.zl.toUIImage()
     }
 }
 
-extension UIImage {
-    class func image(withColor color: UIColor) -> UIImage? {
+public extension ZLPhotoBrowserWrapper where Base: UIImage {
+    static func image(withColor color: UIColor) -> UIImage? {
         let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
         UIGraphicsBeginImageContext(rect.size)
         let context = UIGraphicsGetCurrentContext()
@@ -518,5 +504,37 @@ extension UIImage {
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image
+    }
+}
+
+public extension ZLPhotoBrowserWrapper where Base: UIImage {
+    var width: CGFloat {
+        base.size.width
+    }
+    
+    var height: CGFloat {
+        base.size.height
+    }
+}
+
+extension ZLPhotoBrowserWrapper where Base: UIImage {
+    static func getImage(_ named: String) -> UIImage? {
+        if ZLCustomImageDeploy.imageNames.contains(named), let image = UIImage(named: named) {
+            return image
+        }
+        if let image = ZLCustomImageDeploy.imageForKey[named] {
+            return image
+        }
+        return UIImage(named: named, in: Bundle.zlPhotoBrowserBundle, compatibleWith: nil)
+    }
+}
+
+public extension ZLPhotoBrowserWrapper where Base: CIImage {
+    func toUIImage() -> UIImage? {
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(base, from: base.extent) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage)
     }
 }

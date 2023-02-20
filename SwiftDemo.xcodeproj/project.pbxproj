@@ -37,6 +37,8 @@
 		2F0922012653666B00998C26 /* RefreshViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0922002653666B00998C26 /* RefreshViewControllerProtocol.swift */; };
 		2F092203265393A000998C26 /* BaseRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F092202265393A000998C26 /* BaseRefresh.swift */; };
 		2F0922052653B03100998C26 /* BaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0922042653B03100998C26 /* BaseProtocol.swift */; };
+		2F311C9328911FA2009534FA /* LambdaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F311C9228911FA2009534FA /* LambdaViewController.swift */; };
+		2F46B13B288F85C1006DC7EC /* SwiftLearningController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F46B13A288F85C1006DC7EC /* SwiftLearningController.swift */; };
 		2F63435726C0C60E0085B8A3 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F63435626C0C60E0085B8A3 /* SecondViewController.swift */; };
 		2F63435926C0C7380085B8A3 /* SDAutolayout+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F63435826C0C7380085B8A3 /* SDAutolayout+extension.swift */; };
 		2F70BE7B26574C60005CB9F4 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F70BE7A26574C60005CB9F4 /* WebViewController.swift */; };
@@ -50,6 +52,9 @@
 		2FB3AE35286EEA9E00252350 /* HomeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB3AE34286EEA9E00252350 /* HomeSection.swift */; };
 		2FB3AE37286EECCC00252350 /* DetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB3AE36286EECCC00252350 /* DetailModel.swift */; };
 		2FB3AE39286EEDA100252350 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB3AE38286EEDA100252350 /* DetailViewController.swift */; };
+		2FBA6A0D292F4923005B119D /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FBA6A0C292F4923005B119D /* Array+Extension.swift */; };
+		2FBA6A11292F5A6E005B119D /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FBA6A10292F5A6E005B119D /* Date+Extension.swift */; };
+		2FBA6A13292F5E89005B119D /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FBA6A12292F5E89005B119D /* Dictionary+Extension.swift */; };
 		2FBA96FA25E73DCA00CA807F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2FBA96F825E73DCA00CA807F /* Main.storyboard */; };
 		2FBA96FC25E73DCC00CA807F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2FBA96FB25E73DCC00CA807F /* Assets.xcassets */; };
 		2FBA96FF25E73DCC00CA807F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2FBA96FD25E73DCC00CA807F /* LaunchScreen.storyboard */; };
@@ -90,6 +95,8 @@
 		2F0922002653666B00998C26 /* RefreshViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshViewControllerProtocol.swift; sourceTree = "<group>"; };
 		2F092202265393A000998C26 /* BaseRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRefresh.swift; sourceTree = "<group>"; };
 		2F0922042653B03100998C26 /* BaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseProtocol.swift; sourceTree = "<group>"; };
+		2F311C9228911FA2009534FA /* LambdaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LambdaViewController.swift; sourceTree = "<group>"; };
+		2F46B13A288F85C1006DC7EC /* SwiftLearningController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftLearningController.swift; sourceTree = "<group>"; };
 		2F63435626C0C60E0085B8A3 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		2F63435826C0C7380085B8A3 /* SDAutolayout+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDAutolayout+extension.swift"; sourceTree = "<group>"; };
 		2F70BE7A26574C60005CB9F4 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
@@ -103,6 +110,9 @@
 		2FB3AE34286EEA9E00252350 /* HomeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSection.swift; sourceTree = "<group>"; };
 		2FB3AE36286EECCC00252350 /* DetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailModel.swift; sourceTree = "<group>"; };
 		2FB3AE38286EEDA100252350 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		2FBA6A0C292F4923005B119D /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
+		2FBA6A10292F5A6E005B119D /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		2FBA6A12292F5E89005B119D /* Dictionary+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
 		2FBA96EF25E73DCA00CA807F /* SwiftDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FBA96F925E73DCA00CA807F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2FBA96FB25E73DCC00CA807F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -141,6 +151,9 @@
 				2F63435826C0C7380085B8A3 /* SDAutolayout+extension.swift */,
 				2F03F376264BCCAB00577284 /* UIColorExtension.swift */,
 				2F0921EF2652451D00998C26 /* Scale.swift */,
+				2FBA6A0C292F4923005B119D /* Array+Extension.swift */,
+				2FBA6A10292F5A6E005B119D /* Date+Extension.swift */,
+				2FBA6A12292F5E89005B119D /* Dictionary+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -225,6 +238,8 @@
 				2F03F387264BCCAB00577284 /* HomeViewController.swift */,
 				2F0921F52652686500998C26 /* GoodsDetailViewController.swift */,
 				2FB3AE38286EEDA100252350 /* DetailViewController.swift */,
+				2F46B13A288F85C1006DC7EC /* SwiftLearningController.swift */,
+				2F311C9228911FA2009534FA /* LambdaViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -616,6 +631,7 @@
 				2F03F3B6264BCCAB00577284 /* GoodsReactor.swift in Sources */,
 				2FBA970B25E74F6B00CA807F /* Person.swift in Sources */,
 				2F84C7C6267B1E390062E5CA /* ProductReactor.swift in Sources */,
+				2FBA6A0D292F4923005B119D /* Array+Extension.swift in Sources */,
 				2F03F3B2264BCCAB00577284 /* GoodsSection.swift in Sources */,
 				2F03F3C0264BCCAB00577284 /* FoundViewController.swift in Sources */,
 				2F03F3B0264BCCAB00577284 /* TestNetWork.swift in Sources */,
@@ -637,6 +653,7 @@
 				2FB3AE37286EECCC00252350 /* DetailModel.swift in Sources */,
 				2F03F3B4264BCCAB00577284 /* HomeViewController.swift in Sources */,
 				2F84C7C8267B25880062E5CA /* Product.swift in Sources */,
+				2FBA6A13292F5E89005B119D /* Dictionary+Extension.swift in Sources */,
 				2F03F3BB264BCCAB00577284 /* MineViewController.swift in Sources */,
 				2F03F3B7264BCCAB00577284 /* HomeReactor.swift in Sources */,
 				2F03F3AD264BCCAB00577284 /* UIColorExtension.swift in Sources */,
@@ -644,7 +661,10 @@
 				2F03F3B3264BCCAB00577284 /* HomeModel.swift in Sources */,
 				2F03F3B5264BCCAB00577284 /* NewsCell.swift in Sources */,
 				2F63435926C0C7380085B8A3 /* SDAutolayout+extension.swift in Sources */,
+				2F46B13B288F85C1006DC7EC /* SwiftLearningController.swift in Sources */,
 				2F0921F02652451D00998C26 /* Scale.swift in Sources */,
+				2F311C9328911FA2009534FA /* LambdaViewController.swift in Sources */,
+				2FBA6A11292F5A6E005B119D /* Date+Extension.swift in Sources */,
 				2F03F3AF264BCCAB00577284 /* HttpRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

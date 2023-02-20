@@ -1,9 +1,7 @@
 PODS:
-  - Alamofire (5.6.1)
+  - Alamofire (5.6.2)
+  - AttributedString (3.3.2)
   - BonMot (6.1.1)
-  - Charts (3.6.0):
-    - Charts/Core (= 3.6.0)
-  - Charts/Core (3.6.0)
   - CollectionKit (2.4.0):
     - CollectionKit/Core (= 2.4.0)
   - CollectionKit/Core (2.4.0)
@@ -13,9 +11,10 @@ PODS:
   - EmptyDataSet-Swift (5.0.0)
   - ESTabBarController-swift (2.8.0)
   - FSPagerView (0.8.3)
-  - GKNavigationBarSwift (1.5.0)
+  - GKNavigationBarSwift (1.5.1)
   - HandyJSON (5.0.2)
   - Hero (1.6.1)
+  - JKSwiftExtension (2.1.10)
   - JXPagingView/Paging (2.1.2)
   - JXSegmentedView (1.3.0)
   - Kingfisher (6.3.1)
@@ -62,8 +61,8 @@ PODS:
     - RxSwift (~> 6.0)
   - SDAutoLayout (2.2.1)
   - SnapKit (5.6.0)
-  - Spring (1.0.6)
   - Starscream (4.0.4)
+  - SwiftDate (6.3.1)
   - SwifterSwift (5.2.0):
     - SwifterSwift/AppKit (= 5.2.0)
     - SwifterSwift/CoreAnimation (= 5.2.0)
@@ -89,23 +88,24 @@ PODS:
   - SwifterSwift/StoreKit (5.2.0)
   - SwifterSwift/SwiftStdlib (5.2.0)
   - SwifterSwift/UIKit (5.2.0)
-  - SwiftLint (0.47.1)
+  - SwiftLint (0.48.0)
   - SwiftyJSON (5.0.1)
   - Then (3.0.0)
   - Tiercel (3.2.5)
   - Toast-Swift (5.0.1)
+  - TweeTextField (1.6.4)
   - WeakMapTable (1.2.0)
   - YYKit (1.0.9):
     - YYKit/no-arc (= 1.0.9)
   - YYKit/no-arc (1.0.9)
-  - ZLPhotoBrowser (4.3.2):
-    - ZLPhotoBrowser/Core (= 4.3.2)
-  - ZLPhotoBrowser/Core (4.3.2)
+  - ZLPhotoBrowser (4.3.5):
+    - ZLPhotoBrowser/Core (= 4.3.5)
+  - ZLPhotoBrowser/Core (4.3.5)
 
 DEPENDENCIES:
   - Alamofire
+  - AttributedString
   - BonMot
-  - Charts
   - CollectionKit
   - CryptoSwift (~> 1.4.0)
   - DZNEmptyDataSet
@@ -115,6 +115,7 @@ DEPENDENCIES:
   - GKNavigationBarSwift
   - HandyJSON
   - Hero
+  - JKSwiftExtension
   - JXPagingView/Paging
   - JXSegmentedView
   - Kingfisher
@@ -135,22 +136,23 @@ DEPENDENCIES:
   - RxViewController
   - SDAutoLayout
   - SnapKit
-  - Spring (from `https://github.com/MengTo/Spring.git`)
   - Starscream (~> 4.0.0)
+  - SwiftDate
   - SwifterSwift
   - SwiftLint
   - SwiftyJSON
   - Then
   - Tiercel
   - Toast-Swift (~> 5.0.1)
+  - TweeTextField
   - YYKit
   - ZLPhotoBrowser
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - AttributedString
     - BonMot
-    - Charts
     - CollectionKit
     - CryptoSwift
     - Differentiator
@@ -161,6 +163,7 @@ SPEC REPOS:
     - GKNavigationBarSwift
     - HandyJSON
     - Hero
+    - JKSwiftExtension
     - JXPagingView
     - JXSegmentedView
     - Kingfisher
@@ -182,29 +185,22 @@ SPEC REPOS:
     - SDAutoLayout
     - SnapKit
     - Starscream
+    - SwiftDate
     - SwifterSwift
     - SwiftLint
     - SwiftyJSON
     - Then
     - Tiercel
     - Toast-Swift
+    - TweeTextField
     - WeakMapTable
     - YYKit
     - ZLPhotoBrowser
 
-EXTERNAL SOURCES:
-  Spring:
-    :git: https://github.com/MengTo/Spring.git
-
-CHECKOUT OPTIONS:
-  Spring:
-    :commit: 50d92a5b9e08848387ae95bf44c6ad20834f7083
-    :git: https://github.com/MengTo/Spring.git
-
 SPEC CHECKSUMS:
-  Alamofire: 87bd8c952f9a4454320fce00d9cc3de57bcadaf5
+  Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
+  AttributedString: 5941e9db369ee8c1c607456d507f5534be8d8dde
   BonMot: 42c7134bab1da1d1d8805b02113635c12f0200cc
-  Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   CollectionKit: 8f01e7629185bb81072c4aa734d105df5c2d1c8b
   CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
@@ -212,9 +208,10 @@ SPEC CHECKSUMS:
   EmptyDataSet-Swift: eb382c0c87a2d9c678077385a595cec52da38171
   ESTabBarController-swift: 05593a6ad64700b03c0eb60ff625916370aa4136
   FSPagerView: 670405b2f18e2a87fa37f20b00de783e562c25a8
-  GKNavigationBarSwift: 70d443ec833868b4787a167d2925d2b619caaf5b
+  GKNavigationBarSwift: 4348306725596c82558282301de0077014048d03
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
   Hero: 215865ba3ae41dd9bb08cd6c60a645529c6fc94b
+  JKSwiftExtension: f7c0a6f39e4e2033e08d20a09ec4a3ee34a68811
   JXPagingView: 90924b364a2ff7e94db534fad1fa50925ff69ee4
   JXSegmentedView: fec0d335355b6e019c494fe2e030bde8a36d2df6
   Kingfisher: 016c8b653a35add51dd34a3aba36b580041acc74
@@ -235,18 +232,19 @@ SPEC CHECKSUMS:
   RxViewController: 56486fa0afd629a1d6b5ba077f3b8cd9dc31b5d2
   SDAutoLayout: 8bf6b3bbc8b01f775d4defbb4fda2ace805461be
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
-  Spring: 3d113f14575ef79aec9c5f906dfa4f5001c03254
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
+  SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
   SwifterSwift: 334181863c416882d97b7a60c05054d9e4d799e2
-  SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
+  SwiftLint: 284cea64b6187c5d6bd83e9a548a64104d546447
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
   Then: 844265ae87834bbe1147d91d5d41a404da2ec27d
   Tiercel: c0a73f876a72800333b15f4e7e48791f4ad21e90
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
+  TweeTextField: 726de695eead9784f7ed02e22f6944bfcfcca07a
   WeakMapTable: 05c694ce8439a7a9ebabb56187287a63c57673d6
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
-  ZLPhotoBrowser: fbd03a797675cca8f7a85e0f539eef28eb742bf6
+  ZLPhotoBrowser: 329ce19ac36da8fa9a163e878f88479bf1a11461
 
-PODFILE CHECKSUM: 0d1d8a0765d28567cf96ac935fa8bd44a938e53c
+PODFILE CHECKSUM: a35db277f09a233f188ed3aac0be9bab5f8a765c
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

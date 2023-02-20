@@ -65,20 +65,20 @@ public class ZLImagePreviewController: UIViewController {
         view.isPagingEnabled = true
         view.showsHorizontalScrollIndicator = false
         
-        ZLPhotoPreviewCell.zl_register(view)
-        ZLGifPreviewCell.zl_register(view)
-        ZLLivePhotoPreviewCell.zl_register(view)
-        ZLVideoPreviewCell.zl_register(view)
-        ZLLocalImagePreviewCell.zl_register(view)
-        ZLNetImagePreviewCell.zl_register(view)
-        ZLNetVideoPreviewCell.zl_register(view)
+        ZLPhotoPreviewCell.zl.register(view)
+        ZLGifPreviewCell.zl.register(view)
+        ZLLivePhotoPreviewCell.zl.register(view)
+        ZLVideoPreviewCell.zl.register(view)
+        ZLLocalImagePreviewCell.zl.register(view)
+        ZLNetImagePreviewCell.zl.register(view)
+        ZLNetVideoPreviewCell.zl.register(view)
         
         return view
     }()
     
     private lazy var navView: UIView = {
         let view = UIView()
-        view.backgroundColor = .navBarColorOfPreviewVC
+        view.backgroundColor = .zl.navBarColorOfPreviewVC
         return view
     }()
     
@@ -86,7 +86,7 @@ public class ZLImagePreviewController: UIViewController {
     
     private lazy var backBtn: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setImage(getImage("zl_navBack"), for: .normal)
+        btn.setImage(.zl.getImage("zl_navBack"), for: .normal)
         btn.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
         btn.addTarget(self, action: #selector(backBtnClick), for: .touchUpInside)
         return btn
@@ -94,7 +94,7 @@ public class ZLImagePreviewController: UIViewController {
     
     private lazy var indexLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .indexLabelTextColor
+        label.textColor = .zl.indexLabelTextColor
         label.font = ZLLayout.navTitleFont
         label.textAlignment = .center
         return label
@@ -102,8 +102,8 @@ public class ZLImagePreviewController: UIViewController {
     
     private lazy var selectBtn: ZLEnlargeButton = {
         let btn = ZLEnlargeButton(type: .custom)
-        btn.setImage(getImage("zl_btn_circle"), for: .normal)
-        btn.setImage(getImage("zl_btn_selected"), for: .selected)
+        btn.setImage(.zl.getImage("zl_btn_circle"), for: .normal)
+        btn.setImage(.zl.getImage("zl_btn_selected"), for: .selected)
         btn.enlargeInset = 10
         btn.addTarget(self, action: #selector(selectBtnClick), for: .touchUpInside)
         return btn
@@ -111,7 +111,7 @@ public class ZLImagePreviewController: UIViewController {
     
     private lazy var bottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = .bottomToolViewBgColorOfPreviewVC
+        view.backgroundColor = .zl.bottomToolViewBgColorOfPreviewVC
         return view
     }()
     
@@ -121,10 +121,10 @@ public class ZLImagePreviewController: UIViewController {
         let btn = UIButton(type: .custom)
         btn.titleLabel?.font = ZLLayout.bottomToolTitleFont
         btn.setTitle(title, for: .normal)
-        btn.setTitleColor(.bottomToolViewDoneBtnNormalTitleColorOfPreviewVC, for: .normal)
-        btn.setTitleColor(.bottomToolViewDoneBtnDisableTitleColorOfPreviewVC, for: .disabled)
+        btn.setTitleColor(.zl.bottomToolViewDoneBtnNormalTitleColorOfPreviewVC, for: .normal)
+        btn.setTitleColor(.zl.bottomToolViewDoneBtnDisableTitleColorOfPreviewVC, for: .disabled)
         btn.addTarget(self, action: #selector(doneBtnClick), for: .touchUpInside)
-        btn.backgroundColor = .bottomToolViewBtnNormalBgColorOfPreviewVC
+        btn.backgroundColor = .zl.bottomToolViewBtnNormalBgColorOfPreviewVC
         btn.layer.masksToBounds = true
         btn.layer.cornerRadius = ZLLayout.bottomToolBtnCornerRadius
         return btn
@@ -148,6 +148,10 @@ public class ZLImagePreviewController: UIViewController {
     
     override public var preferredStatusBarStyle: UIStatusBarStyle {
         return ZLPhotoUIConfiguration.default().statusBarStyle
+    }
+    
+    deinit {
+        zl_debugPrint("ZLImagePreviewController deinit")
     }
     
     /// - Parameters:
@@ -260,7 +264,7 @@ public class ZLImagePreviewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .previewVCBgColor
+        view.backgroundColor = .zl.previewVCBgColor
         automaticallyAdjustsScrollViewInsets = false
         
         view.addSubview(navView)
@@ -312,7 +316,7 @@ public class ZLImagePreviewController: UIViewController {
            selCount > 0 {
             doneTitle += "(" + String(selCount) + ")"
         }
-        let doneBtnW = doneTitle.boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 30)).width + 20
+        let doneBtnW = doneTitle.zl.boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 30)).width + 20
         doneBtn.frame = CGRect(x: bottomView.bounds.width - doneBtnW - 15, y: btnY, width: doneBtnW, height: ZLLayout.bottomToolBtnH)
         doneBtn.setTitle(doneTitle, for: .normal)
     }
@@ -444,7 +448,7 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
             let model = ZLPhotoModel(asset: asset)
             
             if config.allowSelectGif, model.type == .gif {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLGifPreviewCell.zl_identifier(), for: indexPath) as! ZLGifPreviewCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLGifPreviewCell.zl.identifier, for: indexPath) as! ZLGifPreviewCell
                 
                 cell.singleTapBlock = { [weak self] in
                     self?.tapPreviewCell()
@@ -453,19 +457,19 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
                 cell.model = model
                 baseCell = cell
             } else if config.allowSelectLivePhoto, model.type == .livePhoto {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLLivePhotoPreviewCell.zl_identifier(), for: indexPath) as! ZLLivePhotoPreviewCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLLivePhotoPreviewCell.zl.identifier, for: indexPath) as! ZLLivePhotoPreviewCell
                 
                 cell.model = model
                 
                 baseCell = cell
             } else if config.allowSelectVideo, model.type == .video {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLVideoPreviewCell.zl_identifier(), for: indexPath) as! ZLVideoPreviewCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLVideoPreviewCell.zl.identifier, for: indexPath) as! ZLVideoPreviewCell
                 
                 cell.model = model
                 
                 baseCell = cell
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLPhotoPreviewCell.zl_identifier(), for: indexPath) as! ZLPhotoPreviewCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLPhotoPreviewCell.zl.identifier, for: indexPath) as! ZLPhotoPreviewCell
 
                 cell.singleTapBlock = { [weak self] in
                     self?.tapPreviewCell()
@@ -478,7 +482,7 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
             
             return baseCell
         } else if let image = obj as? UIImage {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLLocalImagePreviewCell.zl_identifier(), for: indexPath) as! ZLLocalImagePreviewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLLocalImagePreviewCell.zl.identifier, for: indexPath) as! ZLLocalImagePreviewCell
             
             cell.image = image
             
@@ -486,7 +490,7 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
         } else if let url = obj as? URL {
             let type = urlType?(url) ?? ZLURLType.image
             if type == .image {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLNetImagePreviewCell.zl_identifier(), for: indexPath) as! ZLNetImagePreviewCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLNetImagePreviewCell.zl.identifier, for: indexPath) as! ZLNetImagePreviewCell
                 cell.image = nil
                 
                 urlImageLoader?(url, cell.preview.imageView, { [weak cell] progress in
@@ -501,7 +505,7 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
                 
                 baseCell = cell
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLNetVideoPreviewCell.zl_identifier(), for: indexPath) as! ZLNetVideoPreviewCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLNetVideoPreviewCell.zl.identifier, for: indexPath) as! ZLNetVideoPreviewCell
                 
                 cell.configureCell(videoUrl: url, httpHeader: videoHttpHeader)
                 
@@ -541,7 +545,7 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
             guard let cell = collectionView.cellForItem(at: IndexPath(row: currentIndex, section: 0)) as? ZLLocalImagePreviewCell, let image = cell.currentImage else {
                 return
             }
-            let hud = ZLProgressHUD(style: ZLPhotoConfiguration.default().hudStyle)
+            let hud = ZLProgressHUD(style: ZLPhotoUIConfiguration.default().hudStyle)
             hud.show()
             ZLPhotoManager.saveImageToAlbum(image: image) { [weak self] suc, _ in
                 hud.hide()
@@ -551,14 +555,11 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
             }
         }
         
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let save = UIAlertAction(title: localLanguageTextValue(.save), style: .default) { _ in
+        let saveAction = ZLCustomAlertAction(title: localLanguageTextValue(.save), style: .default) { _ in
             saveImage()
         }
-        let cancel = UIAlertAction(title: localLanguageTextValue(.cancel), style: .cancel, handler: nil)
-        alert.addAction(save)
-        alert.addAction(cancel)
-        showAlertController(alert)
+        let cancelAction = ZLCustomAlertAction(title: localLanguageTextValue(.cancel), style: .cancel, handler: nil)
+        showAlertController(title: nil, message: "", style: .actionSheet, actions: [saveAction, cancelAction], sender: self)
     }
     
 }

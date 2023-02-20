@@ -50,10 +50,10 @@ class ZLPhotoPreviewController: UIViewController {
         view.isPagingEnabled = true
         view.showsHorizontalScrollIndicator = false
         
-        ZLPhotoPreviewCell.zl_register(view)
-        ZLGifPreviewCell.zl_register(view)
-        ZLLivePhotoPreviewCell.zl_register(view)
-        ZLVideoPreviewCell.zl_register(view)
+        ZLPhotoPreviewCell.zl.register(view)
+        ZLGifPreviewCell.zl.register(view)
+        ZLLivePhotoPreviewCell.zl.register(view)
+        ZLVideoPreviewCell.zl.register(view)
         
         return view
     }()
@@ -64,7 +64,7 @@ class ZLPhotoPreviewController: UIViewController {
     
     private lazy var navView: UIView = {
         let view = UIView()
-        view.backgroundColor = .navBarColorOfPreviewVC
+        view.backgroundColor = .zl.navBarColorOfPreviewVC
         return view
     }()
     
@@ -72,7 +72,7 @@ class ZLPhotoPreviewController: UIViewController {
     
     private lazy var backBtn: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setImage(getImage("zl_navBack"), for: .normal)
+        btn.setImage(.zl.getImage("zl_navBack"), for: .normal)
         btn.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
         btn.addTarget(self, action: #selector(backBtnClick), for: .touchUpInside)
         return btn
@@ -80,8 +80,8 @@ class ZLPhotoPreviewController: UIViewController {
     
     private lazy var selectBtn: ZLEnlargeButton = {
         let btn = ZLEnlargeButton(type: .custom)
-        btn.setImage(getImage("zl_btn_circle"), for: .normal)
-        btn.setImage(getImage("zl_btn_selected"), for: .selected)
+        btn.setImage(.zl.getImage("zl_btn_circle"), for: .normal)
+        btn.setImage(.zl.getImage("zl_btn_selected"), for: .selected)
         btn.enlargeInset = 10
         btn.addTarget(self, action: #selector(selectBtnClick), for: .touchUpInside)
         return btn
@@ -89,8 +89,8 @@ class ZLPhotoPreviewController: UIViewController {
     
     private lazy var indexLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = .indexLabelBgColor
-        label.font = getFont(14)
+        label.backgroundColor = .zl.indexLabelBgColor
+        label.font = .zl.font(ofSize: 14)
         label.textColor = .white
         label.textAlignment = .center
         label.layer.cornerRadius = 25.0 / 2
@@ -101,7 +101,7 @@ class ZLPhotoPreviewController: UIViewController {
     
     private lazy var bottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = .bottomToolViewBgColorOfPreviewVC
+        view.backgroundColor = .zl.bottomToolViewBgColorOfPreviewVC
         return view
     }()
     
@@ -120,9 +120,9 @@ class ZLPhotoPreviewController: UIViewController {
         btn.titleLabel?.lineBreakMode = .byCharWrapping
         btn.titleLabel?.numberOfLines = 2
         btn.contentHorizontalAlignment = .left
-        btn.setImage(getImage("zl_btn_original_circle"), for: .normal)
-        btn.setImage(getImage("zl_btn_original_selected"), for: .selected)
-        btn.setImage(getImage("zl_btn_original_selected"), for: [.selected, .highlighted])
+        btn.setImage(.zl.getImage("zl_btn_original_circle"), for: .normal)
+        btn.setImage(.zl.getImage("zl_btn_original_selected"), for: .selected)
+        btn.setImage(.zl.getImage("zl_btn_original_selected"), for: [.selected, .highlighted])
         btn.adjustsImageWhenHighlighted = false
         btn.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         return btn
@@ -130,7 +130,7 @@ class ZLPhotoPreviewController: UIViewController {
     
     private lazy var doneBtn: UIButton = {
         let btn = createBtn(localLanguageTextValue(.done), #selector(doneBtnClick), true)
-        btn.backgroundColor = .bottomToolViewBtnNormalBgColorOfPreviewVC
+        btn.backgroundColor = .zl.bottomToolViewBtnNormalBgColorOfPreviewVC
         btn.layer.masksToBounds = true
         btn.layer.cornerRadius = ZLLayout.bottomToolBtnCornerRadius
         return btn
@@ -278,11 +278,11 @@ class ZLPhotoPreviewController: UIViewController {
         let btnMaxWidth = (bottomView.bounds.width - 30) / 3
         
         let editTitle = localLanguageTextValue(.edit)
-        let editBtnW = editTitle.boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 30)).width
+        let editBtnW = editTitle.zl.boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 30)).width
         editBtn.frame = CGRect(x: 15, y: btnY, width: min(btnMaxWidth, editBtnW), height: btnH)
         
         let originTitle = localLanguageTextValue(.originalPhoto)
-        let originBtnW = originTitle.boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 30)).width + 30
+        let originBtnW = originTitle.zl.boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 30)).width + 30
         let originBtnMaxW = min(btnMaxWidth, originBtnW)
         originalBtn.frame = CGRect(x: (bottomView.bounds.width - originBtnMaxW) / 2 - 5, y: btnY, width: originBtnMaxW, height: btnH)
         
@@ -291,12 +291,12 @@ class ZLPhotoPreviewController: UIViewController {
         if ZLPhotoConfiguration.default().showSelectCountOnDoneBtn, selCount > 0 {
             doneTitle += "(" + String(selCount) + ")"
         }
-        let doneBtnW = doneTitle.boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 30)).width + 20
+        let doneBtnW = doneTitle.zl.boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 30)).width + 20
         doneBtn.frame = CGRect(x: bottomView.bounds.width - doneBtnW - 15, y: btnY, width: doneBtnW, height: btnH)
     }
     
     private func setupUI() {
-        view.backgroundColor = .previewVCBgColor
+        view.backgroundColor = .zl.previewVCBgColor
         automaticallyAdjustsScrollViewInsets = false
         
         let config = ZLPhotoConfiguration.default()
@@ -347,8 +347,14 @@ class ZLPhotoPreviewController: UIViewController {
         let btn = UIButton(type: .custom)
         btn.titleLabel?.font = ZLLayout.bottomToolTitleFont
         btn.setTitle(title, for: .normal)
-        btn.setTitleColor(isDone ? .bottomToolViewDoneBtnNormalTitleColorOfPreviewVC : .bottomToolViewBtnNormalTitleColorOfPreviewVC, for: .normal)
-        btn.setTitleColor(isDone ? .bottomToolViewDoneBtnDisableTitleColorOfPreviewVC : .bottomToolViewBtnDisableTitleColorOfPreviewVC, for: .disabled)
+        btn.setTitleColor(
+            isDone ? .zl.bottomToolViewDoneBtnNormalTitleColorOfPreviewVC : .zl.bottomToolViewBtnNormalTitleColorOfPreviewVC,
+            for: .normal
+        )
+        btn.setTitleColor(
+            isDone ? .zl.bottomToolViewDoneBtnDisableTitleColorOfPreviewVC : .zl.bottomToolViewBtnDisableTitleColorOfPreviewVC,
+            for: .disabled
+        )
         btn.addTarget(self, action: action, for: .touchUpInside)
         return btn
     }
@@ -509,11 +515,19 @@ class ZLPhotoPreviewController: UIViewController {
     @objc private func editBtnClick() {
         let config = ZLPhotoConfiguration.default()
         let model = arrDataSources[currentIndex]
-        let hud = ZLProgressHUD(style: config.hudStyle)
+        
+        var requestAvAssetID: PHImageRequestID?
+        let hud = ZLProgressHUD(style: ZLPhotoUIConfiguration.default().hudStyle)
+        hud.timeoutBlock = { [weak self] in
+            showAlertView(localLanguageTextValue(.timeout), self)
+            if let requestAvAssetID = requestAvAssetID {
+                PHImageManager.default().cancelImageRequest(requestAvAssetID)
+            }
+        }
         
         if model.type == .image || (!config.allowSelectGif && model.type == .gif) || (!config.allowSelectLivePhoto && model.type == .livePhoto) {
-            hud.show()
-            ZLPhotoManager.fetchImage(for: model.asset, size: model.previewSize) { [weak self] image, isDegraded in
+            hud.show(timeout: ZLPhotoConfiguration.default().timeout)
+            requestAvAssetID = ZLPhotoManager.fetchImage(for: model.asset, size: model.previewSize) { [weak self] image, isDegraded in
                 if !isDegraded {
                     if let image = image {
                         self?.showEditImageVC(image: image)
@@ -524,19 +538,12 @@ class ZLPhotoPreviewController: UIViewController {
                 }
             }
         } else if model.type == .video || config.allowEditVideo {
-            var requestAvAssetID: PHImageRequestID?
-            hud.show(timeout: 20)
-            hud.timeoutBlock = { [weak self] in
-                showAlertView(localLanguageTextValue(.timeout), self)
-                if let _ = requestAvAssetID {
-                    PHImageManager.default().cancelImageRequest(requestAvAssetID!)
-                }
-            }
+            hud.show(timeout: ZLPhotoConfiguration.default().timeout)
             // fetch avasset
             requestAvAssetID = ZLPhotoManager.fetchAVAsset(forVideo: model.asset) { [weak self] avAsset, _ in
                 hud.hide()
-                if let av = avAsset {
-                    self?.showEditVideoVC(model: model, avAsset: av)
+                if let avAsset = avAsset {
+                    self?.showEditVideoVC(model: model, avAsset: avAsset)
                 } else {
                     showAlertView(localLanguageTextValue(.timeout), self)
                 }
@@ -761,7 +768,7 @@ extension ZLPhotoPreviewController: UICollectionViewDataSource, UICollectionView
         let baseCell: ZLPreviewBaseCell
         
         if config.allowSelectGif, model.type == .gif {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLGifPreviewCell.zl_identifier(), for: indexPath) as! ZLGifPreviewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLGifPreviewCell.zl.identifier, for: indexPath) as! ZLGifPreviewCell
             
             cell.singleTapBlock = { [weak self] in
                 self?.tapPreviewCell()
@@ -771,19 +778,19 @@ extension ZLPhotoPreviewController: UICollectionViewDataSource, UICollectionView
             
             baseCell = cell
         } else if config.allowSelectLivePhoto, model.type == .livePhoto {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLLivePhotoPreviewCell.zl_identifier(), for: indexPath) as! ZLLivePhotoPreviewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLLivePhotoPreviewCell.zl.identifier, for: indexPath) as! ZLLivePhotoPreviewCell
             
             cell.model = model
             
             baseCell = cell
         } else if config.allowSelectVideo, model.type == .video {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLVideoPreviewCell.zl_identifier(), for: indexPath) as! ZLVideoPreviewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLVideoPreviewCell.zl.identifier, for: indexPath) as! ZLVideoPreviewCell
             
             cell.model = model
             
             baseCell = cell
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLPhotoPreviewCell.zl_identifier(), for: indexPath) as! ZLPhotoPreviewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLPhotoPreviewCell.zl.identifier, for: indexPath) as! ZLPhotoPreviewCell
 
             cell.singleTapBlock = { [weak self] in
                 self?.tapPreviewCell()
@@ -825,7 +832,7 @@ class ZLPhotoPreviewSelectedView: UIView, UICollectionViewDataSource, UICollecti
         view.delegate = self
         view.showsHorizontalScrollIndicator = false
         view.alwaysBounceHorizontal = true
-        ZLPhotoPreviewSelectedViewCell.zl_register(view)
+        ZLPhotoPreviewSelectedViewCell.zl.register(view)
         
         if #available(iOS 11.0, *) {
             view.dragDelegate = self
@@ -1000,7 +1007,7 @@ class ZLPhotoPreviewSelectedView: UIView, UICollectionViewDataSource, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLPhotoPreviewSelectedViewCell.zl_identifier(), for: indexPath) as! ZLPhotoPreviewSelectedViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLPhotoPreviewSelectedViewCell.zl.identifier, for: indexPath) as! ZLPhotoPreviewSelectedViewCell
         
         let m = arrSelectedModels[indexPath.row]
         cell.model = m
@@ -1048,7 +1055,7 @@ class ZLPhotoPreviewSelectedViewCell: UICollectionViewCell {
     
     private lazy var tagLabel: UILabel = {
         let label = UILabel()
-        label.font = getFont(13)
+        label.font = .zl.font(ofSize: 13)
         label.textColor = .white
         return label
     }()
@@ -1066,7 +1073,7 @@ class ZLPhotoPreviewSelectedViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        layer.borderColor = UIColor.bottomToolViewBtnNormalBgColorOfPreviewVC.cgColor
+        layer.borderColor = UIColor.zl.bottomToolViewBtnNormalBgColorOfPreviewVC.cgColor
         
         contentView.addSubview(imageView)
         contentView.addSubview(tagImageView)
@@ -1094,7 +1101,7 @@ class ZLPhotoPreviewSelectedViewCell: UICollectionViewCell {
         
         if model.type == .video {
             tagImageView.isHidden = false
-            tagImageView.image = getImage("zl_video")
+            tagImageView.image = .zl.getImage("zl_video")
             tagLabel.isHidden = true
         } else if ZLPhotoConfiguration.default().allowSelectGif, model.type == .gif {
             tagImageView.isHidden = true
@@ -1102,12 +1109,12 @@ class ZLPhotoPreviewSelectedViewCell: UICollectionViewCell {
             tagLabel.text = "GIF"
         } else if ZLPhotoConfiguration.default().allowSelectLivePhoto, model.type == .livePhoto {
             tagImageView.isHidden = false
-            tagImageView.image = getImage("zl_livePhoto")
+            tagImageView.image = .zl.getImage("zl_livePhoto")
             tagLabel.isHidden = true
         } else {
             if let _ = model.editImage {
                 tagImageView.isHidden = false
-                tagImageView.image = getImage("zl_editImage_tag")
+                tagImageView.image = .zl.getImage("zl_editImage_tag")
             } else {
                 tagImageView.isHidden = true
                 tagLabel.isHidden = true
