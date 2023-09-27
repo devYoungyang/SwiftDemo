@@ -11,18 +11,31 @@ import Photos
 extension UIApplication: JKPOPCompatible {}
 // MARK: - 一、基本的扩展
 public extension JKPOP where Base: UIApplication {
-    
-    // MARK: 1.1、获取屏幕的方向
-    /// 获取屏幕的方向
-    static var screenOrientation: UIInterfaceOrientation {
-        return UIApplication.shared.statusBarOrientation
+    //MARK: 1.1、获取当前的keyWindow
+    /// 获取当前的keyWindow
+    static var keyWindow: UIWindow? {
+        if #available(iOS 13, *) {
+            return UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+        } else {
+            return UIApplication.shared.keyWindow
+        }
     }
     
-    // MARK: 1.2、获取根控制器
+    // MARK: 1.2、获取屏幕的方向
+    /// 获取屏幕的方向
+    static var screenOrientation: UIInterfaceOrientation {
+        if #available(iOS 13, *) {
+            return UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation ?? .landscapeLeft
+        } else {
+            return UIApplication.shared.statusBarOrientation
+        }
+    }
+    
+    // MARK: 1.3、获取根控制器
     /// 获取根控制器
     /// - Parameter base: 哪个控制器为基准
     /// - Returns: 返回 UIViewController
-    static func topViewController(_ base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+    static func topViewController(_ base: UIViewController? = UIApplication.jk.keyWindow?.rootViewController) -> UIViewController? {
         if let nav = base as? UINavigationController {
             return topViewController(nav.visibleViewController)
         }
@@ -37,7 +50,7 @@ public extension JKPOP where Base: UIApplication {
         return base
     }
     
-    // MARK: 1.3、设备信息的获取
+    // MARK: 1.4、设备信息的获取
     /// 设备信息的获取
     static var userAgent: String {
         if let info = Bundle.main.infoDictionary {
@@ -59,7 +72,7 @@ public extension JKPOP where Base: UIApplication {
         return "JK" + Bundle.jk.appVersion
     }
     
-    // MARK: 1.4、app定位区域
+    // MARK: 1.5、app定位区域
     /// app定位区域
     static var localizations: String? {
         guard let weakInfoDictionary = Bundle.jk.infoDictionary, let content = weakInfoDictionary[String(kCFBundleLocalizationsKey)] else {
@@ -68,21 +81,32 @@ public extension JKPOP where Base: UIApplication {
         return (content as! String)
     }
     
-    // MARK: 1.5、网络状态是否可用
+    // MARK: 1.6、网络状态是否可用
     /// 网络状态是否可用
     static func reachable() -> Bool {
         let data = NSData(contentsOf: URL(string: "https://www.baidu.com/")!)
         return (data != nil)
     }
     
-    // MARK: 1.6、消息推送是否可用
-    /// 消息推送是否可用
-    static func hasRightOfPush() -> Bool {
-        let notOpen = UIApplication.shared.currentUserNotificationSettings?.types == UIUserNotificationType(rawValue: 0)
-        return !notOpen
+    // MARK: 1.7、检查用户是否打开系统推送权限
+    /// 检查用户是否打开系统推送权限
+    // 判断用户是否允许推送
+    static func checkPushNotification(completion: @escaping (_ authorized: Bool) -> ()) {
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+                if (settings.authorizationStatus == .authorized){
+                    completion(true)
+                } else {
+                    completion(false)
+                }
+            }
+        } else {
+            let _autorized = UIApplication.shared.currentUserNotificationSettings?.types.contains(.alert) ?? false
+            completion(_autorized)
+        }
     }
     
-    // MARK: 1.7、注册APNs远程推送
+    // MARK: 1.8、注册APNs远程推送
     /// 注册APNs远程推送
     static func registerAPNsWithDelegate(_ delegate: Any) {
         if #available(iOS 10.0, *) {
@@ -135,7 +159,7 @@ public extension JKPOP where Base: UIApplication {
         }
     }
     
-    // MARK: 1.8、app商店链接
+    // MARK: 1.9、app商店链接
     /// app商店链接
     @discardableResult
     static func appUrlWithID(_ appStoreID: String) -> String {
@@ -143,7 +167,7 @@ public extension JKPOP where Base: UIApplication {
         return appStoreUrl
     }
     
-    // MARK: 1.9、app详情链接
+    // MARK: 1.10、app详情链接
     /// app详情链接
     @discardableResult
     static func appDetailUrlWithID(_ appStoreID: String) -> String {
@@ -151,8 +175,17 @@ public extension JKPOP where Base: UIApplication {
         return detailUrl
     }
     
+    //MARK: 1.11、APP是否常亮
+    /// APP是否常亮
     static func isIdleTimerDisabled(isIdleTimerDisabled: Bool) {
         UIApplication.shared.isIdleTimerDisabled = isIdleTimerDisabled
+    }
+    
+    //MARK: 1.12、APP主动崩溃
+    /// APP主动崩溃
+    static func exitApp() {
+        // 默认的程序结束函数
+        abort()
     }
 }
 
@@ -207,86 +240,6 @@ public enum JKSystemAppType: String {
     case Videos = "videos://"
 }
 
-/// 第三方app
-public enum JKThirdPartyAppType: String {
-    /// 微信
-    case weixin = "weixin://"
-    /// QQ
-    case qq = "mqq://"
-    /// 腾讯微博
-    case tencentWeibo = "TencentWeibo://"
-    /// 淘宝
-    case taobao = "taobao://"
-    /// 支付宝
-    case alipay = "alipay://"
-    /// 微博
-    case weico = "weico://"
-    /// QQ浏览器
-    case mqqbrowser = "mqqbrowser://"
-    /// uc浏览器
-    case ucbrowser = " ucbrowser://"
-    /// 海豚浏览器
-    case dolphin = "dolphin://"
-    /// 欧朋浏览器
-    case ohttp = "ohttp://"
-    /// 搜狗浏览器
-    case sogouMSE = "SogouMSE://"
-    ///  百度地图
-    case baidumap = "baidumap://"
-    /// 谷歌Chrome浏览器
-    case googlechrome = "googlechrome://"
-    ///  优酷
-    case youku = "youku://"
-    /// 京东
-    case jd = "openapp.jdmoble://"
-    /// 人人
-    case renren = "renren://"
-    /// 美团
-    case meituan = "imeituan://"
-    /// 1号店
-    case wccbyihaodian = "wccbyihaodian://"
-    /// 我查查
-    case wcc = " wcc://"
-    /// 有道词典
-    case yddictproapp = "yddictproapp://"
-    /// 知乎
-    case zhihu = "zhihu://"
-    /// 点评
-    case dianping = "dianping://"
-    /// 微盘
-    case sinavdisk = "sinavdisk://"
-    /// 豆瓣fm
-    case doubanradio = "doubanradio://"
-    /// 网易公开课
-    case ntesopen = "ntesopen://"
-    /// 名片全能王
-    case camcard = "camcard://"
-    /// QQ音乐
-    case qqmusic = "qqmusic://"
-    /// 腾讯视频
-    case tenvideo = "envideo://"
-    /// 豆瓣电影
-    case doubanmovie = "doubanmovie://"
-    /// 网易云音乐
-    case orpheus = "orpheus://"
-    /// 网易新闻
-    case newsapp = "newsapp://"
-    /// 网易应用
-    case apper = "apper://"
-    /// 网易彩票
-    case ntescaipiao = "ntescaipiao://"
-    /// 有道云笔记
-    case youdaonote = "youdaonote://"
-    /// 多看
-    case duokan = "duokan-reader://"
-    /// 全国空气质量指数
-    case dirtybeijing = "dirtybeijing://"
-    /// 百度音乐
-    case baidumusic = "baidumusic://"
-    /// 下厨房
-    case xcfapp = " xcfapp://"
-}
- 
 public extension JKPOP where Base: UIApplication {
     // MARK: 打开系统app
     /// 打开系统app
@@ -297,8 +250,12 @@ public extension JKPOP where Base: UIApplication {
     
     // MARK: 打开第三方app
     /// 打开第三方app
-    /// - Parameter type: 第三方app类型
-    static func openThirdPartyApp(type: JKThirdPartyAppType, complete: @escaping ((Bool) -> Void)) {
-        JKGlobalTools.openUrl(url: URL(string: type.rawValue)!, complete: complete)
+    /// - Parameter thirdPartyAppDeeplink: 第三方app的Deeplink
+    static func openThirdPartyApp(thirdPartyAppDeeplink: String, complete: @escaping ((Bool) -> Void)) {
+        guard let url = URL(string: thirdPartyAppDeeplink) else {
+            complete(false)
+            return
+        }
+        JKGlobalTools.openUrl(url: url, complete: complete)
     }
 }

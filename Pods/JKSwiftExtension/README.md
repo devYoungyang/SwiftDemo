@@ -1,9 +1,10 @@
 ![](https://user-images.githubusercontent.com/19670000/114378430-45129480-9bba-11eb-9051-74d89c3e15f3.png)
 
-[![CI Status](https://img.shields.io/travis/JoanKing/JKSwiftExtension.svg?style=flat)](https://travis-ci.org/JoanKing/JKSwiftExtension)
-[![Version](https://img.shields.io/cocoapods/v/JKSwiftExtension.svg?style=flat)](https://cocoapods.org/pods/JKSwiftExtension)
-[![License](https://img.shields.io/cocoapods/l/JKSwiftExtension.svg?style=flat)](https://cocoapods.org/pods/JKSwiftExtension)
-[![Platform](https://img.shields.io/cocoapods/p/JKSwiftExtension.svg?style=flat)](https://cocoapods.org/pods/JKSwiftExtension)
+<p align="center">
+<a href="https://cocoapods.org/pods/JKSwiftExtension"><img src="https://img.shields.io/cocoapods/v/JKSwiftExtension.svg?style=flat"></a>
+<a href="https://github.com/JoanKing/JKSwiftExtension/blob/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/JKSwiftExtension.svg?style=flat"></a>
+<a href="https://cocoapods.org/pods/JKSwiftExtension"><img src="https://img.shields.io/cocoapods/p/JKSwiftExtension.svg?style=flat"></a>
+</p>
 
 ## 组成部分  
 
@@ -16,7 +17,7 @@
 
    每一个 `Extension` 都会对应一个测试用例的类，如果没有的说明还没有完善，如： String 的分类 `String+Extension` 的测试用例在 `StringExtensionViewController.swift` 里面
    ![WechatIMG160.jpeg](https://upload-images.jianshu.io/upload_images/1728484-f0bcaccd3f7d26b3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1024)
-
+   
 ## 导入方式
 
 #### 方式一：Swift Package Manager
@@ -46,9 +47,97 @@ end
 ## 讨论
 - 微信号: wangc2318151015
 - 邮箱: jkironman@163.com
-<img src="https://user-images.githubusercontent.com/19670000/174286196-a20713b4-d404-4f1e-8128-989593552c62.jpeg" alt="微信交流群" width="220">
+<img src="https://github.com/JoanKing/JKSwiftExtension/assets/19670000/c4cbd321-3803-424b-892e-9bd27431351a" alt="微信交流群" width="220">
 
 ## 版本说明
+  - 2.4.1、版本(2023.09.17)：String+Extension.swift新增枚举StringTypeLength新增lengthOfBytesUtf8和customCountOfChars
+    ```swift
+    /// utf8编码通过字节判断长度
+    case lengthOfBytesUtf8
+    /// 英文 = 1，数字 = 1，汉语 = 2
+    case customCountOfChars
+    ```
+    修复限制文字长度的漏洞
+  - 2.4.0、版本(2023.08.12)：修改jk_kScreenW等属性为计算属性
+  - 2.3.9、版本(2023.08.12)：iOS13适配
+  - 2.3.8、版本(2023.07.22)：JKAlertViewControllerView增加card样式与JKCommonTool增加模型差异对比方法
+  - 2.3.5、版本(2023.07.12)：修复Date+Extension取今天一直不杀死app无法更新日期的问题
+        ```swift
+        static var todayDate: Date {
+            return Date()
+        }
+        ```
+  - 2.3.4、版本(2023.06.30)：放在库外部(因为涉及到支付宝等敏感第三方)
+      - (1)、String+Extension.swift新增枚举StringTypeLength来获取中字符串的长度方式
+        /// 字符串取类型的长度
+        ```swift
+        public enum StringTypeLength {
+            /// Unicode字符个数
+            case count
+            /// utf8
+            case utf8
+            /// utf16获取长度对应NSString的.length方法
+            case utf16
+            /// unicodeScalars
+            case unicodeScalars
+        }
+        func typeLengh(_ type: StringTypeLength) -> Int {}获取类型长度
+        ```
+      - (2)、UITextField+Extension.swift和UITextView+Extension.swift的输入限制方法inputRestrictions新增lenghType: StringTypeLength = .count参数
+  - 2.3.3、版本(2023.06.01)：JKThirdPartyAppType放在库外部(因为涉及到支付宝等敏感第三方)
+     UIApplication+Extension.swift中打开第三方的方法之前传类型，改为传第三方的deeplink
+  - 2.3.0、版本(2023.05.29) : 新增JKAlertViewController弹框和修复字符串截取有表情崩溃的问题
+  - 2.2.9、版本(2023.05.03) : 新增单位转换的类：JKUnitConverter和优化并修复部分问题
+      - (1)、新增单位转换的类：JKUnitConverter，支持：距离、质量、温度的基本单位转换
+      - (2)、修复部分问题，Date在12小时制问题的修复
+  - 2.2.8、版本(2023.03.12) : 更新部分extension
+  - 2.2.7、版本(2023.02.14) 
+      - (1)、 NSDecimalNumberHandler扩展的优化
+         - 1、两个数字之间的计算增加参数：roundingMode(舍入方式)和 scale(保留小数的位数)
+         - 2、数字取舍以及位数的处理
+      - (2)、新增JKCustomPickView
+  - 2.2.6、版本(2023.01.12)
+      - (1)、UIFont扩展的优化
+         - 1、UIFont系统字体的扩展简化，例如regular的字体原来的UIFont.systemFont(ofSize: 20, weight: .regular)到UIFont.textR(20)
+         - 2、UIFont字体支持PingFangSC字体的优化使用，比如：PingFangSC-Regular使用方式为UIFont.pingFangR(20)
+         - 3、UIFont字体支持自定义字体，比如第三方字体的使用：UIFont.jk.customFont(26, fontName: "第三方字体的名字")
+      - (2)、NSAttributedString扩展增加测试用例
+  - 2.2.5、版本(2022.12.17) 代码格式检查
+  - 2.2.4、版本(2022.12.11)
+      - (1)、新增JKCircleProgressView圆形进度条
+      - (2)、UIView+Extension.swift部分bug修复
+      - (3)、JKPanView完善
+  - 2.2.3、版本
+      - (1)、String+Extension.swift
+         - 1、replacingCharacters 根据指定range替换内容
+         - 2、validIndex校验字符串位置是否合理做超出范围(针对表情)做处理
+      - (2)、UITextFiled+Extension.swift
+         - 1、限制字数的输入inputRestrictions的bugfix
+      - (3)、UITextView+Extension.swift
+         - 1、限制字数的输入inputRestrictions的bugfix
+  - 2.2.2、版本
+       - UIView+Extension.swift的圆角和阴影共存的bugfix
+       - 其他扩展的bugfix
+  - 2.2.1、版本
+      - (1)、String+Extension.swift 扩展
+         - 1、增加手机隐藏位数，可设置前后的隐藏位数，方法：hidePhone  
+         - 2、增加邮箱隐藏位数，可设置前后的隐藏位数，方法：hideEmail  
+         - 3、修复插入任意位置插入字符串的bug，方法：insertString
+     - (2)、UIDevice+Extension.swift 
+         - 1、修复有关获取sim卡信息强制解包崩溃的问题 
+         - 2、增加设备的震动相关方法，SystemSoundID、UINotificationFeedbackGenerator、UIImpactFeedbackGenerator
+     - (3)、UITextView+Extension.swift
+         - 1、修复方法inputRestrictions中当有字数限制，在复制内容的时候，不可截取的问题
+     - (4)、UITextField+Extension.swift
+         - 1、修复方法inputRestrictions中当有字数限制，在复制内容的时候，不可截取的问题
+   - 2.1.12、版本
+      - (1)、UIVisualEffectView+Extension.swift 新增 import UIKit
+      - (2)、新增 UITapGestureRecognizer+Extension.swift 扩展
+   - 2.1.10、版本
+      - (1)、String+Extension.swift 新增 匹配两个字符之间的内容 matchesMiddleContentOfCharacters
+      - (2)、CGFloat+Extension.swift、Float+Extension.swift 新增四舍五入方法：rounding(scale: Int16 = 1)
+      - (3)、NSDecimalNumberHandler+Extension.swift 新增四舍五入方法：rounding(value: Any, scale: Int16 = 0)
+      - (4)、JKEmptyView.swift 空白视图，使用简单，方便去显示空白或者无网络的界面，有待完善
    - 2.1.9、版本：
       - (1)、UIButton扩展里面的扩大点击事件，做了修复，之前把self.base写成了self，导致扩大范围失效，在2.1.9分支做了修复
       - (2)、新增字符串有关子串在父字符串range的范围，返回一个子串的范围数组

@@ -13,10 +13,10 @@ import UIKit
  初始化方法
  roundingMode 舍入方式
  scale 小数点后舍入值的位数
- raiseOnExactness 精度错误处理
- raiseOnOverflow 溢出错误处理
- raiseOnUnderflow 下溢错误处理
- raiseOnDivideByZero 除以0的错误处理
+ raiseOnExactness 精度错误处理(发生精确错误时是否抛出异常，一般为false)
+ raiseOnOverflow 溢出错误处理(发生溢出错误时是否抛出异常，一般为false)
+ raiseOnUnderflow 下溢错误处理(发生不足错误时是否抛出异常，一般为false)
+ raiseOnDivideByZero 除以0的错误处理（被0除时是否抛出异常，一般为true）
  */
 /**
  public enum RoundingMode : UInt {
@@ -61,8 +61,9 @@ public extension JKPOP where Base: NSDecimalNumberHandler {
         guard valueArray.count > 1 else {
             return true
         }
+        let decimalValue = valueArray[1]
         // 有小数的情况
-        guard valueArray.count > 1, let decimalValue = valueArray[1] as? String, decimalValue.count == 1, decimalValue == "0" else {
+        guard decimalValue.count == 1, decimalValue == "0" else {
             return false
         }
         return true
@@ -75,8 +76,8 @@ public extension JKPOP where Base: NSDecimalNumberHandler {
     ///   - value1: 值
     ///   - value2: 值
     /// - Returns: 计算结果
-    static func calculation(type: DecimalNumberHandlerType, value1: Any, value2: Any) -> NSDecimalNumber {
-        return decimalNumberHandlerValue(type: type, value1: value1, value2: value2, roundingMode: .down, scale: 30, raiseOnExactness: false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: false)
+    static func calculation(type: DecimalNumberHandlerType, value1: Any, value2: Any, roundingMode: NSDecimalNumber.RoundingMode, scale: Int16) -> NSDecimalNumber {
+        return decimalNumberHandlerValue(type: type, value1: value1, value2: value2, roundingMode: roundingMode, scale: scale, raiseOnExactness: false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: false)
     }
     
     // MARK:1.4、一个数字四舍五入返回
@@ -86,6 +87,17 @@ public extension JKPOP where Base: NSDecimalNumberHandler {
     /// - Returns:四舍五入返回结果
     static func rounding(value: Any, scale: Int16 = 0) -> NSDecimalNumber {
         return decimalNumberHandlerValue(type: .multiplying, value1: value, value2: "1", roundingMode: .plain, scale: scale, raiseOnExactness: false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: false)
+    }
+    
+    // MARK:1.5、数字取舍以及位数的处理
+    /// 数字取舍以及位数的处理
+    /// - Parameters:
+    ///   - value1: 值
+    ///   - roundingMode: 舍入方式
+    ///   - scale: 保留位数
+    /// - Returns: 处理结果
+    static func digitalTradeOff(value1: Any, roundingMode: NSDecimalNumber.RoundingMode, scale: Int16) -> NSDecimalNumber {
+        return decimalNumberHandlerValue(type: .multiplying, value1: value1, value2: "1", roundingMode: roundingMode, scale: scale, raiseOnExactness: false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: false)
     }
 }
 
@@ -98,7 +110,7 @@ public extension JKPOP where Base: NSDecimalNumberHandler {
     ///   - value1: 第一个值
     ///   - value2: 第二个人值
     ///   - roundingMode: 舍入方式
-    ///   - scale: 小数点后舍入值的位数
+    ///   - scale: 保留有效小数的个数（为0的无效小数后自动过滤)
     ///   - exact:  精度错误处理
     ///   - overflow: 溢出错误处理
     ///   - underflow: 下溢错误处理

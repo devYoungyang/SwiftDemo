@@ -44,6 +44,12 @@ class ZLCameraCell: UICollectionViewCell {
     
     private var previewLayer: AVCaptureVideoPreviewLayer?
     
+    var isEnable: Bool = true {
+        didSet {
+            contentView.alpha = isEnable ? 1 : 0.3
+        }
+    }
+    
     deinit {
         session?.stopRunning()
         session = nil
@@ -63,7 +69,6 @@ class ZLCameraCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        imageView.frame = CGRect(x: 0, y: 0, width: bounds.width / 3, height: bounds.width / 3)
         imageView.center = CGPoint(x: bounds.midX, y: bounds.midY)
         
         previewLayer?.frame = contentView.layer.bounds
@@ -71,7 +76,7 @@ class ZLCameraCell: UICollectionViewCell {
     
     private func setupUI() {
         layer.masksToBounds = true
-        layer.cornerRadius = ZLPhotoConfiguration.default().cellCornerRadio
+        layer.cornerRadius = ZLPhotoUIConfiguration.default().cellCornerRadio
         
         contentView.addSubview(imageView)
         backgroundColor = .zl.cameraCellBgColor

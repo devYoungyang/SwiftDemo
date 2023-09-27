@@ -91,8 +91,8 @@ public func jk_isPadDevice() -> Bool {
     return UIDevice.current.userInterfaceIdiom == .pad
 }
 
-// MARK: 1.8、判断是不是 4 4s
-/// 4 4s
+// MARK: 1.8、判断是不是 4or4s
+/// 判断是不是 4or4s
 /// - Returns: description
 public func jk_is4OrLess() -> Bool {
     return jk_isIphone() && jk_kScreenH < 568
@@ -129,44 +129,54 @@ public func jk_isSimulator() -> Bool {
 // MARK: - 二、屏幕尺寸常用的常量
 // MARK: 2.1、屏幕的宽
 /// 屏幕的宽
-public let jk_kScreenW: CGFloat = UIScreen.main.bounds.width
+public var jk_kScreenW: CGFloat { return UIScreen.main.bounds.width }
+
 // MARK: 2.2、屏幕的高
 /// 屏幕的高
-public let jk_kScreenH: CGFloat = UIScreen.main.bounds.height
+public var jk_kScreenH: CGFloat { return UIScreen.main.bounds.height }
+
 // MARK: 2.3、获取statusBar的高度
 /// 获取statusBar的高度
 public var jk_kStatusBarFrameH: CGFloat {
-    guard isIPhoneX else {
-        return 20
+    if #available(iOS 13.0, *) {
+        let window: UIWindow? = UIApplication.shared.windows.first
+        let statusBarHeight = (window?.windowScene?.statusBarManager?.statusBarFrame.height) ?? 0
+        return statusBarHeight
+    } else {
+        // 防止界面没有出来获取为0的情况
+        return UIApplication.shared.statusBarFrame.height > 0 ? UIApplication.shared.statusBarFrame.height : 44
     }
-    // 防止界面没有出来获取为0的情况
-    return UIApplication.shared.statusBarFrame.height > 0 ? UIApplication.shared.statusBarFrame.height : 44
 }
+
 // MARK: 2.4、获取导航栏的高度
 /// 获取导航栏的高度
-public let jk_kNavFrameH: CGFloat = 44 + jk_kStatusBarFrameH
+public var jk_kNavFrameH: CGFloat { return 44 + jk_kStatusBarFrameH }
     
 // MARK: 2.5、屏幕底部Tabbar高度
 /// 屏幕底部Tabbar高度
 public var jk_kTabbarFrameH: CGFloat { return isIPhoneX ? 83 : 49 }
+
 // MARK: 2.6、屏幕底部刘海高度
 /// 屏幕底部刘海高度
 public var jk_kTabbarBottom: CGFloat { return isIPhoneX ? 34 : 0 }
+
 // MARK: 2.7、屏幕比例
 /// 屏幕比例
 public let jk_kPixel = 1.0 / UIScreen.main.scale
+
 // MARK: 2.8、身份证宽高比
 /// 身份证宽高比
 public let jk_kRatioIDCard: CGFloat = 0.63
-// MARK: 2.9、适配比例
-/// 适配比例
-public let jk_scaleIphone = jk_kScreenW / CGFloat(375.0)
+
+// MARK: 2.9、375尺寸适配比例
+/// 375尺寸适配比例
+public var jk_scaleIphone: CGFloat { return jk_kScreenW / CGFloat(375.0) }
 
 // MARK: - 屏幕16:9比例系数下的宽高
 // 宽
-public let jk_kScreenW16_9: CGFloat = jk_kScreenW * 9.0 / 16.0
+public var jk_kScreenW16_9: CGFloat { return jk_kScreenW * 9.0 / 16.0 }
 // 高
-public let jk_kScreenH16_9: CGFloat = jk_kScreenH * 16.0 / 9.0
+public var jk_kScreenH16_9: CGFloat { return jk_kScreenH * 16.0 / 9.0 }
 
 // MARK: - 三、UIView 有关 Frame 的扩展
 public extension JKPOP where Base: UIView {
@@ -363,7 +373,8 @@ extension JKPOP where Base: UIView {
     ///   - angle: 旋转多少度
     ///   - isInverted: 顺时针还是逆时针，默认是顺时针
     public func setRotation(_ angle: CGFloat, isInverted: Bool = false) {
-        self.base.transform = isInverted ? CGAffineTransform(rotationAngle: angle).inverted() : CGAffineTransform(rotationAngle: angle)
+        let radians = Double(angle) / 180 * Double.pi
+        self.base.transform = isInverted ? CGAffineTransform(rotationAngle: CGFloat(radians)).inverted() : CGAffineTransform(rotationAngle: CGFloat(radians))
     }
     
     // MARK: 4.2、沿X轴方向旋转多少度(3D旋转)
@@ -519,7 +530,8 @@ public extension JKPOP where Base: UIView {
     /// - Parameter shadowOpacity: 阴影的透明度
     /// - Parameter shadowRadius: 阴影半径，默认 3
     ///
-    /// - Note: 提示：如果在异步布局(如：SnapKit布局)中使用，要在布局后先调用 layoutIfNeeded，再使用该方法
+    /// - Note1: 如果在异步布局(如：SnapKit布局)中使用，要在布局后先调用 layoutIfNeeded，再使用该方法
+    /// - Note2: 如果在添加阴影的视图被移除，底部插入的父视图的layer是不会被移除的⚠️
     func addCornerAndShadow(superview: UIView, conrners: UIRectCorner , radius: CGFloat = 3, shadowColor: UIColor, shadowOffset: CGSize, shadowOpacity: Float, shadowRadius: CGFloat = 3) {
         
         let maskPath = UIBezierPath(roundedRect: self.base.bounds, byRoundingCorners: conrners, cornerRadii: CGSize(width: radius, height: radius))
@@ -531,7 +543,7 @@ public extension JKPOP where Base: UIView {
         let subLayer = CALayer()
         let fixframe = self.base.frame
         subLayer.frame = fixframe
-        subLayer.cornerRadius = shadowRadius
+        subLayer.cornerRadius = radius
         subLayer.backgroundColor = shadowColor.cgColor
         subLayer.masksToBounds = false
         // shadowColor阴影颜色
@@ -542,13 +554,14 @@ public extension JKPOP where Base: UIView {
         subLayer.shadowOpacity = shadowOpacity
         // 阴影半径，默认3
         subLayer.shadowRadius = shadowRadius
+        subLayer.shadowPath = maskPath.cgPath
         superview.layer.insertSublayer(subLayer, below: self.base.layer)
     }
     
     // MARK: 5.5、通过贝塞尔曲线View添加阴影和圆角
     /// 通过贝塞尔曲线View添加阴影和圆角
     ///
-    /// - Parameter conrners: 具体哪个圆角
+    /// - Parameter conrners: 具体哪个圆角(暂时只支持：allCorners)
     /// - Parameter radius: 圆角大小
     /// - Parameter shadowColor: 阴影的颜色
     /// - Parameter shadowOffset: 阴影的偏移度：CGSizeMake(X[正的右偏移,负的左偏移], Y[正的下偏移,负的上偏移])
@@ -557,15 +570,15 @@ public extension JKPOP where Base: UIView {
     ///
     /// - Note: 提示：如果在异步布局(如：SnapKit布局)中使用，要在布局后先调用 layoutIfNeeded，再使用该方法
     func addViewCornerAndShadow(conrners: UIRectCorner , radius: CGFloat = 3, shadowColor: UIColor, shadowOffset: CGSize, shadowOpacity: Float, shadowRadius: CGFloat = 3) {
+        // 切圆角
         base.layer.shadowColor = shadowColor.cgColor
         base.layer.shadowOffset = shadowOffset
         base.layer.shadowOpacity = shadowOpacity
         base.layer.shadowRadius = shadowRadius
-        // 切圆角
         base.layer.cornerRadius = radius
+       
         // 路径阴影
         let path = UIBezierPath.init(roundedRect: base.bounds, byRoundingCorners: conrners, cornerRadii: CGSize.init(width: radius, height: radius))
-        // 设置阴影路径
         base.layer.shadowPath = path.cgPath
     }
     
@@ -651,8 +664,8 @@ public extension JKPOP where Base: UIView {
     ///   - lineSpacing: 每段虚线的间隔
     ///   - direction: 虚线的方向
     func drawDashLine(strokeColor: UIColor,
-                       lineLength: Int = 4,
-                      lineSpacing: Int = 4,
+                       lineLength: CGFloat = 4,
+                      lineSpacing: CGFloat = 4,
                         direction: JKDashLineDirection = .horizontal) {
         // 线粗
         let lineWidth = direction == .horizontal ? self.base.jk.height : self.base.jk.width
@@ -1033,7 +1046,7 @@ public extension JKPOP where Base: UIView {
         #endif
     }
     
-    // MARK: 8.2、寻找某个类型子视图
+    // MARK: 8.2、UIResponder.Type寻找某个类型子视图
     /// 寻找某个类型子视图
     /// - Parameters:
     ///   - type: 子视图类型
@@ -1059,7 +1072,40 @@ public extension JKPOP where Base: UIView {
         return nil
     }
     
-    // MARK: 8.3、移除所有的子视图
+    //MARK: 8.3、T.Type寻找某个类型子视图
+    /// 寻找某个类型子视图
+    /// - Parameter childViewType: 子视图类型
+    /// - Returns: 返回这个类型对象
+    func findSubView<T>(childViewType: T.Type) -> T? {
+        if let subView = self.base as? T {
+            return subView
+        }
+        for subview in self.base.subviews {
+            if let view = subview.jk.findSubView(childViewType: childViewType) {
+                return view
+            }
+        }
+        return nil
+    }
+    
+    //MARK: 8.4、根据类名寻找某] 类型子视图
+    /// 寻找某个类型子视图
+    /// - Parameter childViewType: 子视图类型
+    /// - Returns: 返回这个类型对象
+    func findSubView(childViewClassName: String) -> UIView? {
+        // print("className：\(self.base.className)")
+        if self.base.className == childViewClassName {
+            return self.base
+        }
+        for subview in self.base.subviews {
+            if let view = subview.jk.findSubView(childViewClassName: childViewClassName) {
+                return view
+            }
+        }
+        return nil
+    }
+    
+    // MARK: 8.5、移除所有的子视图
     /// 移除所有的子视图
     func removeAllSubViews() {
         for subView in self.base.subviews {
@@ -1067,7 +1113,7 @@ public extension JKPOP where Base: UIView {
         }
     }
     
-    // MARK: 8.4、移除layer
+    // MARK: 8.6、移除layer
     /// 移除layer
     /// - Returns: 返回自身
     @discardableResult
@@ -1280,9 +1326,9 @@ public extension JKPOP where Base : UIView {
     ///   - direction: 渐变方向
     ///   - gradientColors: 渐变的颜色数组（颜色的数组是）
     ///   - gradientLocations: 决定每个渐变颜色的终止位置，这些值必须是递增的，数组的长度和 colors 的长度最好一致
-    func gradientColor(_ direction: JKViewGradientDirection = .horizontal, _ gradientColors: [Any], _ gradientLocations: [NSNumber]? = nil) {
+    func gradientColor(_ direction: JKViewGradientDirection = .horizontal, _ gradientColors: [Any], _ gradientLocations: [NSNumber]? = nil, _ transform: CATransform3D? = nil) {
         // 获取渐变对象
-        let gradientLayer = CAGradientLayer().jk.gradientLayer(direction, gradientColors, gradientLocations)
+        let gradientLayer = CAGradientLayer().jk.gradientLayer(direction, gradientColors, gradientLocations, transform)
         // 设置其CAGradientLayer对象的frame，并插入view的layer
         gradientLayer.frame = CGRect(x: 0, y: 0, width: self.base.jk.width, height: self.base.jk.height)
         self.base.layer.insertSublayer(gradientLayer, at: 0)

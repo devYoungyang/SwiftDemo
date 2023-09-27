@@ -28,6 +28,7 @@ import UIKit
 import Photos
 
 class ZLThumbnailPhotoCell: UICollectionViewCell {
+    private lazy var containerView = UIView()
     
     private lazy var bottomShadowView = UIImageView(image: .zl.getImage("zl_shadow"))
     
@@ -82,9 +83,10 @@ class ZLThumbnailPhotoCell: UICollectionViewCell {
     
     lazy var indexLabel: UILabel = {
         let label = UILabel()
-        label.layer.cornerRadius = 23.0 / 2
+        label.layer.cornerRadius = 25.0 / 2
         label.layer.masksToBounds = true
-        label.textColor = .white
+        label.textColor = .zl.indexLabelTextColor
+        label.backgroundColor = .zl.indexLabelBgColor
         label.font = .zl.font(ofSize: 14)
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.5
@@ -92,9 +94,13 @@ class ZLThumbnailPhotoCell: UICollectionViewCell {
         return label
     }()
     
-    var enableSelect: Bool = true
+    var enableSelect = true {
+        didSet {
+            containerView.alpha = enableSelect ? 1 : 0.2
+        }
+    }
     
-    var selectedBlock: ((Bool) -> Void)?
+    var selectedBlock: ((@escaping (Bool) -> Void) -> Void)?
     
     var model: ZLPhotoModel! {
         didSet {
@@ -125,14 +131,15 @@ class ZLThumbnailPhotoCell: UICollectionViewCell {
     func setupUI() {
         contentView.addSubview(imageView)
         contentView.addSubview(coverView)
-        contentView.addSubview(btnSelect)
+        contentView.addSubview(containerView)
+        containerView.addSubview(btnSelect)
         btnSelect.addSubview(indexLabel)
-        contentView.addSubview(bottomShadowView)
+        containerView.addSubview(bottomShadowView)
         bottomShadowView.addSubview(videoTag)
         bottomShadowView.addSubview(livePhotoTag)
         bottomShadowView.addSubview(editImageTag)
         bottomShadowView.addSubview(descLabel)
-        contentView.addSubview(progressView)
+        containerView.addSubview(progressView)
         
         if ZLPhotoConfiguration.default().showSelectedBorder {
             layer.borderColor = UIColor.zl.selectedBorderColor.cgColor
@@ -140,9 +147,13 @@ class ZLThumbnailPhotoCell: UICollectionViewCell {
     }
     
     override func layoutSubviews() {
+        super.layoutSubviews()
+        
         imageView.frame = bounds
+        
+        containerView.frame = bounds
         coverView.frame = bounds
-        btnSelect.frame = CGRect(x: bounds.width - 30, y: 8, width: 23, height: 23)
+        btnSelect.frame = CGRect(x: bounds.width - 30, y: 8, width: 25, height: 25)
         indexLabel.frame = btnSelect.bounds
         bottomShadowView.frame = CGRect(x: 0, y: bounds.height - 25, width: bounds.width, height: 25)
         videoTag.frame = CGRect(x: 5, y: 1, width: 20, height: 15)
@@ -150,33 +161,31 @@ class ZLThumbnailPhotoCell: UICollectionViewCell {
         editImageTag.frame = CGRect(x: 5, y: -1, width: 20, height: 20)
         descLabel.frame = CGRect(x: 30, y: 1, width: bounds.width - 35, height: 17)
         progressView.frame = CGRect(x: (bounds.width - 20) / 2, y: (bounds.height - 20) / 2, width: 20, height: 20)
-        
-        super.layoutSubviews()
     }
     
     @objc func btnSelectClick() {
-        if !enableSelect, ZLPhotoConfiguration.default().showInvalidMask {
-            return
-        }
-        
-        btnSelect.layer.removeAllAnimations()
-        if !btnSelect.isSelected, ZLPhotoConfiguration.default().animateSelectBtnWhenSelect {
-            btnSelect.layer.add(getSpringAnimation(), forKey: nil)
-        }
-        
-        selectedBlock?(btnSelect.isSelected)
-        
-        if btnSelect.isSelected {
-            fetchBigImage()
-        } else {
-            progressView.isHidden = true
-            cancelFetchBigImage()
-        }
+        selectedBlock?({ [weak self] isSelected in
+            let config = ZLPhotoConfiguration.default()
+            
+            self?.btnSelect.isSelected = isSelected
+            self?.btnSelect.layer.removeAllAnimations()
+            
+            if isSelected, config.animateSelectBtnWhenSelect {
+                self?.btnSelect.layer.add(ZLAnimationUtils.springAnimation(), forKey: nil)
+            }
+            
+            if isSelected {
+                self?.fetchBigImage()
+            } else {
+                self?.progressView.isHidden = true
+                self?.cancelFetchBigImage()
+            }
+        })
     }
     
     private func configureCell() {
-        if ZLPhotoConfiguration.default().cellCornerRadio > 0 {
-            layer.cornerRadius = ZLPhotoConfiguration.default().cellCornerRadio
+        if ZLPhotoUIConfiguration.default().cellCornerRadio > 0 {
+            layer.cornerRadius = ZLPhotoUIConfiguration.default().cellCornerRadio
             layer.masksToBounds = true
         }
         
@@ -225,16 +234,14 @@ class ZLThumbnailPhotoCell: UICollectionViewCell {
         btnSelect.isUserInteractionEnabled = showSelBtn
         btnSelect.isSelected = model.isSelected
         
-        indexLabel.backgroundColor = .zl.indexLabelBgColor
-        
         if model.isSelected {
             fetchBigImage()
         } else {
             cancelFetchBigImage()
         }
         
-        if let ei = model.editImage {
-            imageView.image = ei
+        if let editImage = model.editImage {
+            imageView.image = editImage
         } else {
             fetchSmallImage()
         }
@@ -242,7 +249,7 @@ class ZLThumbnailPhotoCell: UICollectionViewCell {
     
     private func fetchSmallImage() {
         let size: CGSize
-        let maxSideLength = bounds.width * 1.2
+        let maxSideLength = bounds.width * 2
         if model.whRatio > 1 {
             let w = maxSideLength * model.whRatio
             size = CGSize(width: w, height: maxSideLength)

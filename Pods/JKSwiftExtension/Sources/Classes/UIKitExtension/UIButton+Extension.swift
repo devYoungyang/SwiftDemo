@@ -353,14 +353,10 @@ public extension JKPOP where Base: UIButton {
     ///   - imageFirst: 图片是否优先
     private func alignHorizontal(spacing: CGFloat, imageFirst: Bool) {
         let edgeOffset = spacing / 2
-        base.imageEdgeInsets = UIEdgeInsets(top: 0,
-                                            left: -edgeOffset,
-                                            bottom: 0,
-                                            right: edgeOffset)
-        base.titleEdgeInsets = UIEdgeInsets(top: 0,
-                                            left: edgeOffset,
-                                            bottom: 0,
-                                            right: -edgeOffset)
+        base.imageEdgeInsets = UIEdgeInsets(top: 0, left: -edgeOffset,
+                                            bottom: 0,right: edgeOffset)
+        base.titleEdgeInsets = UIEdgeInsets(top: 0, left: edgeOffset,
+                                            bottom: 0, right: -edgeOffset)
         if !imageFirst {
             base.transform = CGAffineTransform(scaleX: -1, y: 1)
             base.imageView?.transform = CGAffineTransform(scaleX: -1, y: 1)
@@ -487,7 +483,7 @@ public extension UIButton {
         }
     }
     
-    // MARK: 4.3、处于倒计时时，前缀文案，如：「再次获取」 + (xxxs)
+    // MARK: 4.4、处于倒计时时，前缀文案，如：「再次获取」 + (xxxs)
     /// 处于倒计时时，前缀文案，如：「再次获取」 + (xxxs)
     var timeringPrefix: String? {
         get {
@@ -501,10 +497,11 @@ public extension UIButton {
         }
     }
     
-    // MARK: 销毁定时器
+    // MARK: 4.5、销毁定时器
     /// 销毁定时器
     func invalidate() {
         if self.timer != nil {
+            isEnabled = true
             self.timer?.cancel()
             self.timer = nil
         }
@@ -579,6 +576,8 @@ public extension JKPOP where Base: UIButton {
     
     // MARK: 6.1、扩大UIButton的点击区域，向四周扩展10像素的点击范围
     /// 扩大按钮点击区域 如UIEdgeInsets(top: -50, left: -50, bottom: -50, right: -15)将点击区域上下左右各扩充50
+    ///
+    /// 提示：theView 扩展点击相应区域时，其扩展的区域不能超过 superView 的 frame ，否则不会相应改点击事件；如果需要响应点击事件，需要对其 superView 进行和 theView 进行同样的处理
     var touchExtendInset: UIEdgeInsets {
         get {
             if let value = objc_getAssociatedObject(self.base, &JKUIButtonExpandSizeKey) {

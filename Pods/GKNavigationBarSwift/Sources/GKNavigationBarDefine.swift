@@ -8,9 +8,6 @@
 
 import UIKit
 
-public let GK_SCREEN_WIDTH = UIScreen.main.bounds.size.width
-public let GK_SCREEN_HEIGHT = UIScreen.main.bounds.size.height
-
 /// 导航栏间距，用于不同控制器之间的间距
 public let GKNavigationBarItemSpace: CGFloat = -1.0
 
@@ -36,6 +33,14 @@ public func gk_swizzled_instanceMethod(_ prefix: String, oldClass: Swift.AnyClas
     }else {
         method_exchangeImplementations(originalMethod!, swizzledMethod!)
     }
+}
+
+public func gk_getAssociatedObject(_ object: Any, _ key: UnsafeRawPointer) -> Any? {
+    return objc_getAssociatedObject(object, key)
+}
+
+public func gk_setAssociatedObject(_ object: Any, _ key: UnsafeRawPointer, _ value: Any?) {
+    objc_setAssociatedObject(object, key, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 }
 
 // 定义Awake协议，让需要重新系统方法的类实现该协议

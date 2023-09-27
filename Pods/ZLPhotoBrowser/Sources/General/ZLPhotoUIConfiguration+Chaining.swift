@@ -54,14 +54,51 @@ public extension ZLPhotoUIConfiguration {
     }
     
     @discardableResult
-    func hudStyle(_ style: ZLProgressHUD.HUDStyle) -> ZLPhotoUIConfiguration {
+    func hudStyle(_ style: ZLProgressHUD.Style) -> ZLPhotoUIConfiguration {
         hudStyle = style
+        return self
+    }
+    
+    @discardableResult
+    func adjustSliderType(_ type: ZLAdjustSliderType) -> ZLPhotoUIConfiguration {
+        adjustSliderType = type
+        return self
+    }
+    
+    @discardableResult
+    func cellCornerRadio(_ cornerRadio: CGFloat) -> ZLPhotoUIConfiguration {
+        cellCornerRadio = cornerRadio
         return self
     }
     
     @discardableResult
     func customAlertClass(_ alertClass: ZLCustomAlertProtocol.Type?) -> ZLPhotoUIConfiguration {
         customAlertClass = alertClass
+        return self
+    }
+    
+    /// - Note: This property is ignored when using columnCountBlock.
+    @discardableResult
+    func columnCount(_ count: Int) -> ZLPhotoUIConfiguration {
+        columnCount = count
+        return self
+    }
+    
+    @discardableResult
+    func columnCountBlock(_ block: ((_ collectionViewWidth: CGFloat) -> Int)?) -> ZLPhotoUIConfiguration {
+        columnCountBlock = block
+        return self
+    }
+    
+    @discardableResult
+    func minimumInteritemSpacing(_ value: CGFloat) -> ZLPhotoUIConfiguration {
+        minimumInteritemSpacing = value
+        return self
+    }
+    
+    @discardableResult
+    func minimumLineSpacing(_ value: CGFloat) -> ZLPhotoUIConfiguration {
+        minimumLineSpacing = value
         return self
     }
     
@@ -116,6 +153,12 @@ public extension ZLPhotoUIConfiguration {
     @discardableResult
     func themeFontName(_ name: String) -> ZLPhotoUIConfiguration {
         themeFontName = name
+        return self
+    }
+    
+    @discardableResult
+    func themeColor(_ color: UIColor) -> ZLPhotoUIConfiguration {
+        themeColor = color
         return self
     }
     
@@ -368,6 +411,12 @@ public extension ZLPhotoUIConfiguration {
     @discardableResult
     func imageEditorToolTitleTintColor(_ color: UIColor) -> ZLPhotoUIConfiguration {
         imageEditorToolTitleTintColor = color
+        return self
+    }
+    
+    @discardableResult
+    func imageEditorToolIconTintColor(_ color: UIColor) -> ZLPhotoUIConfiguration {
+        imageEditorToolIconTintColor = color
         return self
     }
     

@@ -49,7 +49,7 @@ public extension UIAlertController {
     // MARK: 1.4、跳转 UIAlertController
     /// UIAlertController
     func show() {
-        UIApplication.shared.keyWindow?.rootViewController?.present(self, animated: true, completion: nil)
+        UIApplication.jk.keyWindow?.rootViewController?.present(self, animated: true, completion: nil)
     }
 
     // MARK: 1.5、跳转 UIAlertController，不做操作自动返回
@@ -69,5 +69,18 @@ public extension UIAlertController {
             guard let weakSelf = self else { return }
             weakSelf.dismiss(animated: true, completion: nil)
         }
+    }
+    
+    //MARK: 1.6、添加多个 UIAlertAction
+    /// 添加多个 UIAlertAction
+    @discardableResult
+    func addActionTitles(_ titles: [String], handler: ((UIAlertController, UIAlertAction) -> Void)? = nil) -> Self {
+        titles.forEach({ (string) in
+            let style: UIAlertAction.Style = string == "取消" ? .cancel : .default
+            self.addAction(UIAlertAction(title: string, style: style, handler: { (action) in
+                handler?(self, action)
+            }))
+        })
+        return self
     }
 }

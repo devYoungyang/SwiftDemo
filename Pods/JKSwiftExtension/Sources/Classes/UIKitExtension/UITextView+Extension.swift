@@ -10,7 +10,6 @@ import UIKit
 // MARK: - 一、基本的扩展
 public extension UITextView {
     
-    
 }
 
 // MARK: - 二、文本链接的扩展
@@ -107,73 +106,165 @@ public extension JKPOP where Base: UITextView {
     }
 }
 
-// MARK: - 三、其他的扩展
+// MARK: - 三、输入内容以及正则的配置
 public extension JKPOP where Base: UITextView {
-    // MARK: 3.1、限制字数的输入(提示在：- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;方法里面调用)
-    /// 限制字数的输入
+    // MARK: 3.1、限制字数的输入(可配置正则)(提示在：- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;方法里面调用)
+    /// 限制字数的输入(可配置正则)
     /// - Parameters:
     ///   - range: 范围
     ///   - text: 输入的文字
     ///   - maxCharacters: 限制字数
     ///   - regex: 可输入内容(正则)
+    ///   - isInterceptString: 复制文字进来，在字数限制的情况下，多余的字体是否截取掉，默认true
     /// - Returns: 返回是否可输入
-    func inputRestrictions(shouldChangeTextIn range: NSRange, replacementText text: String, maxCharacters: Int, regex: String?) -> Bool {
+    func inputRestrictions(shouldChangeTextIn range: NSRange, replacementText text: String, maxCharacters: Int, regex: String?, isInterceptString: Bool = true, lenghType: StringTypeLength = .count, isRemovePasteboardNewlineCharacters: Bool = false) -> Bool {
         guard !text.isEmpty else {
             return true
         }
-        
         guard let oldContent = self.base.text else {
             return false
         }
-        
-        if let _ = self.base.markedTextRange {
-            /*
-             let selectedRange = textView.markedTextRange
-             let beginning = textView.beginningOfDocument
-             let selectionStart = selectedRange.start
-             let selectionEnd = selectedRange.end
-             
-             let location = textView.offset(from: beginning, to: selectionStart)
-             let length = textView.offset(from: selectionStart, to: selectionEnd)
-             
-             print("location：\(location) length：\(length)")
-             let selectText = textView.text(in: selectedRange)
-             print("高亮部分的文字：\(selectText ?? "高亮没有文字")")
-             print("有range-----------：YES \(selectedRange) 开始：\(selectedRange.start) 内容：\(oldContent) 长度：\(oldContent.count) 新的内容：\(text) 长度：\(text.count) 是否包含emoji表情：\(text.fb.containsEmoji()) range：\(range)")
-             */
-            // print("🚀有range---------内容：\(oldContent) 长度：\(oldContent.count) 新的内容：\(text) 长度：\(text.count) range：\(range)")
-             // 有高亮
-            if range.length == 0 {
-                // 联想中
-                return oldContent.count + 1 <= maxCharacters
-            } else {
-                // 正则的判断
-                if let weakRegex = regex, !JKRegexHelper.match(text, pattern: weakRegex) {
+        // 输入新的内容
+        var inputingContent = text
+        if isRemovePasteboardNewlineCharacters {
+            let pasteboard = UIPasteboard.general
+            // 判断是否是复制操作，是复制操作做过滤处理
+            let pastedText = (pasteboard.string ?? "").jk.removeSomeStringUseSomeString(removeString: "\n", replacingString: " ").jk.removeAllSapce
+            inputingContent = inputingContent.jk.removeAllSapce
+            if pastedText == inputingContent {
+                if let weakRegex = regex, !JKRegexHelper.match(inputingContent, pattern: weakRegex) {
                     return false
                 }
+                let remainingLength = maxCharacters - oldContent.jk.typeLengh(lenghType)
+                // 可以插入字符串
+                let endString = getInputText(inputingContent: inputingContent, remainingLength: remainingLength, lenghType: lenghType)
+                let newString = oldContent.jk.insertString(content: endString, locat: range.location)
+                self.base.text = newString
+                // 异步改变
+                JKAsyncs.asyncDelay(0.1) {} _: {
+                    let endPosition = self.base.position(from: self.base.beginningOfDocument, offset: range.location + endString.count)
+                    if let endPosition = endPosition {
+                        self.base.selectedTextRange = self.base.textRange(from: endPosition, to: endPosition)
+                    }
+                }
+                return false
+            } else {
+                inputingContent = text
+            }
+        }
+        
+        if let markedTextRange = self.base.markedTextRange {
+            // 有高亮
+            if range.length == 0 {
+                let markedRange = rangeFromTextRange(textRange: markedTextRange)
+                // let markedRangeContent = oldContent.jk.replacingCharacters(range: markedRange)
+                let oldContentLength = oldContent.jk.typeLengh(lenghType)
+                /*
+                 if markedRangeContent.jk.typeLengh(lenghType) < maxCharacters{
+                 return true
+                 }
+                 */
+                // 联想中
+                return oldContentLength + 1 <= maxCharacters
+            } else {
+                // 正则的判断
+                if let weakRegex = regex, !JKRegexHelper.match(inputingContent, pattern: weakRegex) {
+                    return false
+                }
+                let markedRange = rangeFromTextRange(textRange: markedTextRange)
+                let markedRangeString = oldContent.jk.replacingCharacters(range: markedRange)
                 // 联想选中键盘
-                let allContent = oldContent.jk.sub(to: range.location) + text
-                if allContent.count > maxCharacters  {
-                    let newContent = allContent.jk.sub(to: maxCharacters)
-                    // print("content1：\(allContent) content2：\(newContent)")
+                let allContent = markedRangeString + inputingContent
+                if allContent.jk.typeLengh(lenghType) > maxCharacters {
+                    let remainingLength = maxCharacters - markedRangeString.jk.typeLengh(lenghType)
+                    // 在此就需要遍历要输入的内容
+                    let endString: String = getInputText(inputingContent: inputingContent, remainingLength: remainingLength, lenghType: lenghType)
+                    let newContent = markedRangeString + endString
+                    // debugPrint("content1：\(allContent) content2：\(newContent)")
                     self.base.text = newContent
+                    // self.base.sendActions(for: .editingChanged)
                     return false
                 }
             }
         } else {
-            guard !text.jk.isNineKeyBoard() else {
-                return true
+            guard !inputingContent.jk.isNineKeyBoard() else {
+                return oldContent.jk.typeLengh(lenghType) < maxCharacters
             }
             // 正则的判断
-            if let weakRegex = regex, !JKRegexHelper.match(text, pattern: weakRegex) {
+            if let weakRegex = regex, !JKRegexHelper.match(inputingContent, pattern: weakRegex) {
                 return false
             }
-            // print("没有range---------：NO 内容：\(oldContent) 长度：\(oldContent.count) 新的内容：\(text) 长度：\(text.count) range：\(range)")
             // 2、如果数字大于指定位数，不能输入
-            guard oldContent.count + text.count <= maxCharacters else {
+            guard oldContent.jk.typeLengh(lenghType) + inputingContent.jk.typeLengh(lenghType) <= maxCharacters else {
+                // 判断字符串是否要截取
+                guard isInterceptString else {
+                    // 不截取，也就是不让输入进去
+                    return false
+                }
+                let oldLength = oldContent.jk.typeLengh(lenghType)
+                if oldLength < maxCharacters, inputingContent.jk.typeLengh(lenghType) < (maxCharacters - oldLength) {
+                    let remainingLength = maxCharacters - oldContent.jk.typeLengh(lenghType)
+                    let copyString = inputingContent.jk.removeBeginEndAllSapcefeed
+                    // debugPrint("范围：\(range) copy的字符串：\(copyString) 长度：\(copyString.count)  截取的字符串：\(copyString.jk.sub(to: remainingLength))")
+                    // 可以插入字符串
+                    let replaceContent = copyString.jk.sub(to: remainingLength)
+                    // let newString = oldContent.jk.insertString(content: replaceContent), locat: range.location)
+                    let newString = oldContent.jk.replacingCharacters(range: range, replacingString: replaceContent)
+                    // debugPrint("老的字符串：\(oldContent) 新的的字符串：\(newString) 长度：\(newString.count)")
+                    self.base.text = newString
+                    // 异步改变
+                    JKAsyncs.asyncDelay(0.5) {} _: {
+                        if let selectedRange = self.base.selectedTextRange {
+                            if let newPosition = self.base.position(from: selectedRange.start, offset: remainingLength) {
+                                self.base.selectedTextRange = self.base.textRange(from: newPosition, to: newPosition)
+                            }
+                        }
+                    }
+                }
                 return false
             }
         }
         return true
+    }
+    
+    func getInputText(inputingContent: String, remainingLength: Int, lenghType: StringTypeLength) -> String {
+        // 在此就需要遍历要输入的内容
+        var count = 0
+        var endString: String = ""
+        if lenghType == .customCountOfChars {
+            for character in inputingContent {
+                var cLength = 0
+                if ("\(character)".jk.containsEmoji()) {
+                    count += 1
+                    cLength = 1
+                } else {
+                    count += 2
+                    cLength = 2
+                }
+                if (endString.jk.typeLengh(lenghType) + cLength) > remainingLength {
+                    break
+                }
+                endString = endString + "\(character)"
+            }
+        } else {
+            // containsEmoji
+            for character in inputingContent {
+                let cLength = "\(character)".jk.typeLengh(lenghType)
+                if (endString.jk.typeLengh(lenghType) + cLength) > remainingLength {
+                    break
+                }
+                endString = endString + "\(character)"
+            }
+        }
+        return endString
+    }
+    
+    /// UITextRange 转 NSRange
+    /// - Parameter textRange: UITextRange对象
+    /// - Returns: NSRange
+    private func rangeFromTextRange(textRange: UITextRange) -> NSRange {
+        let location: Int = self.base.offset(from: self.base.beginningOfDocument, to: textRange.start)
+        let length: Int = self.base.offset(from: textRange.start, to: textRange.end)
+        return NSMakeRange(location, length)
     }
 }

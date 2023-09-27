@@ -171,6 +171,7 @@ public extension JKPOP where Base: UILabel {
         let attributedString = NSMutableAttributedString(string: text!)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = space
+        paragraphStyle.alignment = self.base.textAlignment
         attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: .init(location: 0, length: text!.count))
         self.base.attributedText = attributedString
         self.base.sizeToFit()
@@ -186,6 +187,7 @@ public extension JKPOP where Base: UILabel {
         let text = self.base.text
         let attributedString = NSMutableAttributedString(string: text!, attributes: [NSAttributedString.Key.kern:space])
         let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = self.base.textAlignment
         attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: .init(location: 0, length: text!.count))
         self.base.attributedText = attributedString
         self.base.sizeToFit()
@@ -203,6 +205,7 @@ public extension JKPOP where Base: UILabel {
         let text = self.base.text
         let attributedString = NSMutableAttributedString(string: text!, attributes: [NSAttributedString.Key.kern:wordSpace])
         let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = self.base.textAlignment
         paragraphStyle.lineSpacing = lineSpace
         attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: .init(location: 0, length: text!.count))
         self.base.attributedText = attributedString
@@ -240,10 +243,10 @@ public extension JKPOP where Base: UILabel {
         /**
          case byWordWrapping = 0       //  以单词为显示单位显示，后面部分省略不显示
          case byCharWrapping = 1        //  以字符为显示单位显示，后面部分省略不显示
-         case byClipping = 2                  //   剪切与文本宽度相同的内容长度，后半部分被删除
-         case byTruncatingHead = 3      //   前面部分文字以……方式省略，显示尾部文字内容
-         case byTruncatingTail = 4         //   中间的内容以……方式省略，显示头尾的文字内容
-         case byTruncatingMiddle = 5    //   结尾部分的内容以……方式省略，显示头的文字内容
+         case byClipping = 2                  //  剪切与文本宽度相同的内容长度，后半部分被删除
+         case byTruncatingHead = 3      //  前面部分文字以……方式省略，显示尾部文字内容
+         case byTruncatingTail = 4         //  结尾部分的内容以……方式省略，显示头的文字内容
+         case byTruncatingMiddle = 5    //  中间的内容以……方式省略，显示头尾的文字内容
          */
         style.lineBreakMode = linebreakmode
         // 文本对齐方式：（左，中，右，两端对齐，自然）

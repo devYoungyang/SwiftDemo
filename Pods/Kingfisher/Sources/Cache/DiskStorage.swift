@@ -122,11 +122,13 @@ public enum DiskStorage {
         ///   - key: The key to which the `value` will be stored. If there is already a value under the key,
         ///          the old value will be overwritten by `value`.
         ///   - expiration: The expiration policy used by this store action.
+        ///   - writeOptions: Data writing options used the new files.
         /// - Throws: An error during converting the value to a data format or during writing it to disk.
         public func store(
             value: T,
             forKey key: String,
-            expiration: StorageExpiration? = nil) throws
+            expiration: StorageExpiration? = nil,
+            writeOptions: Data.WritingOptions = []) throws
         {
             guard storageReady else {
                 throw KingfisherError.cacheError(reason: .diskStorageIsNotReady(cacheURL: directoryURL))
@@ -145,7 +147,7 @@ public enum DiskStorage {
 
             let fileURL = cacheFileURL(forKey: key)
             do {
-                try data.write(to: fileURL)
+                try data.write(to: fileURL, options: writeOptions)
             } catch {
                 throw KingfisherError.cacheError(
                     reason: .cannotCreateCacheFile(fileURL: fileURL, key: key, data: data, error: error)
@@ -455,15 +457,17 @@ extension DiskStorage {
         /// If set to `true`, image extension will be extracted from original file name and append to
         /// the hased file name and used as the cache key on disk.
         public var autoExtAfterHashedFileName = false
+        
+        /// Closure that takes in initial directory path and generates
+        /// the final disk cache path. You can use it to fully customize your cache path.
+        public var cachePathBlock: ((_ directory: URL, _ cacheName: String) -> URL)! = {
+            (directory, cacheName) in
+            return directory.appendingPathComponent(cacheName, isDirectory: true)
+        }
 
         let name: String
         let fileManager: FileManager
         let directory: URL?
-
-        var cachePathBlock: ((_ directory: URL, _ cacheName: String) -> URL)! = {
-            (directory, cacheName) in
-            return directory.appendingPathComponent(cacheName, isDirectory: true)
-        }
 
         /// Creates a config value based on given parameters.
         ///

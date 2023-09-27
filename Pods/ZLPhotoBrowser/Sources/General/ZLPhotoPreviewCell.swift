@@ -49,7 +49,9 @@ class ZLPreviewBaseCell: UICollectionViewCell {
     
     @objc func previewVCScroll() {}
     
-    func resetSubViewStatusWhenCellEndDisplay() {}
+    func willDisplay() {}
+    
+    func didEndDisplaying() {}
     
     func resizeImageView(imageView: UIImageView, asset: PHAsset) {
         let size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
@@ -171,7 +173,7 @@ class ZLLocalImagePreviewCell: ZLPreviewBaseCell {
         addGestureRecognizer(longGes)
     }
     
-    override func resetSubViewStatusWhenCellEndDisplay() {
+    override func didEndDisplaying() {
         preview.scrollView.zoomScale = 1
     }
     
@@ -222,7 +224,7 @@ class ZLNetImagePreviewCell: ZLLocalImagePreviewCell {
         progressView.frame = CGRect(x: bounds.width / 2 - 20, y: bounds.height / 2 - 20, width: 40, height: 40)
     }
     
-    override func resetSubViewStatusWhenCellEndDisplay() {
+    override func didEndDisplaying() {
         progressView.isHidden = true
         preview.scrollView.zoomScale = 1
     }
@@ -274,7 +276,7 @@ class ZLPhotoPreviewCell: ZLPreviewBaseCell {
         contentView.addSubview(preview)
     }
     
-    override func resetSubViewStatusWhenCellEndDisplay() {
+    override func didEndDisplaying() {
         preview.scrollView.zoomScale = 1
     }
     
@@ -347,7 +349,7 @@ class ZLGifPreviewCell: ZLPreviewBaseCell {
         preview.loadGifData()
     }
     
-    override func resetSubViewStatusWhenCellEndDisplay() {
+    override func didEndDisplaying() {
         preview.scrollView.zoomScale = 1
     }
     
@@ -420,7 +422,7 @@ class ZLLivePhotoPreviewCell: ZLPreviewBaseCell {
         return convert(imageView.frame, to: view)
     }
     
-    override func resetSubViewStatusWhenCellEndDisplay() {
+    override func didEndDisplaying() {
         PHImageManager.default().cancelImageRequest(livePhotoRequestID)
     }
     
@@ -479,7 +481,6 @@ class ZLLivePhotoPreviewCell: ZLPreviewBaseCell {
 // MARK: video preview cell
 
 class ZLVideoPreviewCell: ZLPreviewBaseCell {
-    
     override var currentImage: UIImage? {
         return imageView.image
     }
@@ -532,6 +533,8 @@ class ZLVideoPreviewCell: ZLPreviewBaseCell {
     
     private var fetchVideoDone = false
     
+    private let operationQueue = DispatchQueue(label: "com.ZLPhotoBrowser.ZLVideoPreviewCell")
+    
     var isPlaying: Bool {
         if player != nil, player?.rate != 0 {
             return true
@@ -546,6 +549,7 @@ class ZLVideoPreviewCell: ZLPreviewBaseCell {
     }
     
     deinit {
+        cancelDownloadVideo()
         zl_debugPrint("ZLVideoPreviewCell deinit")
     }
     
@@ -576,9 +580,15 @@ class ZLVideoPreviewCell: ZLPreviewBaseCell {
         }
     }
     
-    override func resetSubViewStatusWhenCellEndDisplay() {
+    override func willDisplay() {
+        fetchVideo()
+    }
+    
+    override func didEndDisplaying() {
         imageView.isHidden = false
         player?.currentItem?.seek(to: CMTimeMake(value: 0, timescale: 1))
+        
+        cancelDownloadVideo()
     }
     
     override func animateImageFrame(convertTo view: UIView) -> CGRect {
@@ -619,7 +629,9 @@ class ZLVideoPreviewCell: ZLPreviewBaseCell {
         imageRequestID = ZLPhotoManager.fetchImage(for: model.asset, size: size, completion: { image, _ in
             self.imageView.image = image
         })
-        
+    }
+    
+    private func fetchVideo() {
         videoRequestID = ZLPhotoManager.fetchVideo(for: model.asset, progress: { [weak self] progress, _, _, _ in
             self?.progressView.progress = progress
             zl_debugPrint("video progress \(progress)")
@@ -687,13 +699,21 @@ class ZLVideoPreviewCell: ZLPreviewBaseCell {
         }
         playBtn.setImage(.zl.getImage("zl_playVideo"), for: .normal)
         singleTapBlock?()
+        
+        operationQueue.async {
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
+    }
+    
+    private func cancelDownloadVideo() {
+        PHImageManager.default().cancelImageRequest(videoRequestID)
+        videoRequestID = PHInvalidImageRequestID
     }
     
     func pauseWhileTransition() {
         player?.pause()
         playBtn.setImage(.zl.getImage("zl_playVideo"), for: .normal)
     }
-    
 }
 
 // MARK: net video preview cell
@@ -718,8 +738,10 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         return false
     }
     
+    private let operationQueue = DispatchQueue(label: "com.ZLPhotoBrowser.ZLNetVideoPreviewCell")
+    
     deinit {
-        zl_debugPrint("v deinit")
+        zl_debugPrint("ZLNetVideoPreviewCell deinit")
     }
     
     override init(frame: CGRect) {
@@ -739,7 +761,7 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         playBtn.frame = CGRect(x: 0, y: insets.top, width: bounds.width, height: bounds.height - insets.top - insets.bottom)
     }
     
-    override func resetSubViewStatusWhenCellEndDisplay() {
+    override func didEndDisplaying() {
         player?.currentItem?.seek(to: CMTimeMake(value: 0, timescale: 1))
     }
     
@@ -787,6 +809,10 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         }
         playBtn.setImage(.zl.getImage("zl_playVideo"), for: .normal)
         singleTapBlock?()
+        
+        operationQueue.async {
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
     }
     
     func configureCell(videoUrl: URL, httpHeader: [String: Any]?) {
@@ -972,6 +998,10 @@ class ZLPreviewView: UIView {
         onFetchingGif = false
         fetchGifDone = false
         
+        if ZLPhotoConfiguration.default().gifPlayBlock != nil {
+            imageView.subviews.forEach { $0.removeFromSuperview() }
+        }
+        
         imageRequestID = ZLPhotoManager.fetchImage(for: model.asset, size: requestPhotoSize(gif: true), completion: { [weak self] image, _ in
             guard self?.imageIdentifier == self?.model.ident else {
                 return
@@ -1002,14 +1032,21 @@ class ZLPreviewView: UIView {
             } else {
                 self?.progressView.isHidden = false
             }
-        }, completion: { [weak self] data, _, isDegraded in
-            guard self?.imageIdentifier == self?.model.ident else {
+        }, completion: { [weak self] data, info, isDegraded in
+            guard let `self` = self else { return }
+            guard self.imageIdentifier == self.model.ident else {
                 return
             }
+            
             if !isDegraded {
-                self?.fetchGifDone = true
-                self?.imageView.image = UIImage.zl.animateGifImage(data: data)
-                self?.resetSubViewSize()
+                self.fetchGifDone = true
+                if let gifPlayBlock = ZLPhotoConfiguration.default().gifPlayBlock {
+                    gifPlayBlock(self.imageView, data, info)
+                } else {
+                    self.imageView.image = UIImage.zl.animateGifImage(data: data)
+                }
+                
+                self.resetSubViewSize()
             }
         })
     }
@@ -1109,6 +1146,14 @@ class ZLPreviewView: UIView {
     func resumeGif() {
         guard let m = model else { return }
         guard ZLPhotoConfiguration.default().allowSelectGif, m.type == .gif else { return }
+        
+        let config = ZLPhotoConfiguration.default()
+        
+        if config.gifPlayBlock != nil, let resumeGIFBlock = config.resumeGIFBlock {
+            resumeGIFBlock(imageView)
+            return
+        }
+        
         guard imageView.layer.speed != 1 else { return }
         
         let pauseTime = imageView.layer.timeOffset
@@ -1122,6 +1167,14 @@ class ZLPreviewView: UIView {
     func pauseGif() {
         guard let m = model else { return }
         guard ZLPhotoConfiguration.default().allowSelectGif, m.type == .gif else { return }
+        
+        let config = ZLPhotoConfiguration.default()
+        
+        if config.gifPlayBlock != nil, let pauseGIFBlock = config.pauseGIFBlock {
+            pauseGIFBlock(imageView)
+            return
+        }
+        
         guard imageView.layer.speed != 0 else { return }
         
         let pauseTime = imageView.layer.convertTime(CACurrentMediaTime(), from: nil)

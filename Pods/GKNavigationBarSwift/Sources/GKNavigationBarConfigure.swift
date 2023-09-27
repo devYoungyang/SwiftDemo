@@ -85,13 +85,8 @@ open class GKNavigationBarConfigure : NSObject {
     
     /// 右滑pop过渡临界值，默认0.5，大于此值完成pop操作
     open var gk_popTransitionCriticalValue: CGFloat = 0.5
-    
-    // 以下属性需要设置导航栏转场缩放为YES
-    /// 手机系统大于11.0，使用下面的值控制x、y轴的位移距离，默认（5，5）
-    open var gk_translationX: CGFloat = 5.0
-    open var gk_translationY: CGFloat = 5.0
 
-    /// 手机系统小于11.0，使用下面的值控制x、y周的缩放程度，默认（0.95，0.97）
+    /// 控制x、y轴的缩放程度，默认（0.95，0.97）
     open var gk_scaleX: CGFloat = 0.95
     open var gk_scaleY: CGFloat = 0.97
     
@@ -146,8 +141,6 @@ open class GKNavigationBarConfigure : NSObject {
         gk_snapMovementSensitivity = 0.7
         gk_pushTransitionCriticalValue = 0.3
         gk_popTransitionCriticalValue = 0.5
-        gk_translationX = 5.0
-        gk_translationY = 5.0
         gk_scaleX = 0.95
         gk_scaleY = 0.97
     }
@@ -180,17 +173,9 @@ open class GKNavigationBarConfigure : NSObject {
     
     /// 获取当前item修复间距
     open func gk_fixedSpace() -> CGFloat {
-        // 经测试发现iPhone 12，iPhone 12，默认导航栏间距是16，需要单独处理
-        if GKDevice.is61InchScreenAndiPhone12Later { return 16 }
+        // 经测试发现iPhone 12，iPhone 12 Pro，iPhone 14 Pro默认导航栏间距是16，需要单独处理
+        if GKDevice.is61InchScreenAndiPhone12Later || GKDevice.is61InchScreenAndiPhone14Pro { return 16 }
         return GKDevice.width > 375.0 ? 20 : 16
-    }
-    
-    /// 获取Bundle
-    open func gk_libraryBundle() -> Bundle? {
-        let bundle = Bundle(for: self.classForCoder)
-        let bundleURL = bundle.url(forResource: "GKNavigationBarSwift", withExtension: "bundle")
-        guard let url = bundleURL else { return nil }
-        return Bundle(url: url)
     }
     
     open func fixNavItemSpaceDisabled() -> Bool {
@@ -204,7 +189,7 @@ open class GKNavigationBarConfigure : NSObject {
     
     /// 获取某个view的截图
     open func getCapture(with view: UIView) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.isOpaque, 0)
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, UIScreen.main.scale)
         view.drawHierarchy(in: view.bounds, afterScreenUpdates: false)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
@@ -298,7 +283,7 @@ open class GKDevice {
     
     /// 将屏幕分为普通和紧凑两种，这个方法用于判断普通屏幕（也即大屏幕）
     public static func isRegularScreen() -> Bool {
-        return isIPad || (!isZoomedMode() && (is67InchScreen || is65InchScreen || is61InchScreen || is55InchScreen))
+        return isIPad || (!isZoomedMode() && (is67InchScreenAndiPhone14ProMax || is67InchScreen || is65InchScreen || is61InchScreen || is55InchScreen))
     }
     
     /// 是否是横屏
@@ -411,7 +396,7 @@ open class GKDevice {
         }
         
         if window == nil {
-            window = (UIApplication.shared.delegate?.window)!
+            window = UIApplication.shared.delegate?.window ?? nil
         }
         
         return window
@@ -427,6 +412,26 @@ open class GKDevice {
         }
         
         let dict = [
+            // iPhone 14
+            "iPhone14,7": [UIInterfaceOrientation.portrait: UIEdgeInsets(top: 47, left: 0, bottom: 34, right: 0),
+                           UIInterfaceOrientation.landscapeLeft: UIEdgeInsets(top: 0, left: 47, bottom: 21, right: 47)],
+            "iPhone14,7-Zoom": [UIInterfaceOrientation.portrait: UIEdgeInsets(top: 48, left: 0, bottom: 28, right: 0),
+                                UIInterfaceOrientation.landscapeLeft: UIEdgeInsets(top: 0, left: 48, bottom: 21, right: 48)],
+            // iPhone 14 Plus
+            "iPhone14,8": [UIInterfaceOrientation.portrait: UIEdgeInsets(top: 47, left: 0, bottom: 34, right: 0),
+                           UIInterfaceOrientation.landscapeLeft: UIEdgeInsets(top: 0, left: 47, bottom: 21, right: 47)],
+            "iPhone14,8-Zoom": [UIInterfaceOrientation.portrait: UIEdgeInsets(top: 41, left: 0, bottom: 30, right: 0),
+                                UIInterfaceOrientation.landscapeLeft: UIEdgeInsets(top: 0, left: 41, bottom: 21, right: 41)],
+            // iPhone 14 Pro
+            "iPhone15,2": [UIInterfaceOrientation.portrait: UIEdgeInsets(top: 59, left: 0, bottom: 34, right: 0),
+                           UIInterfaceOrientation.landscapeLeft: UIEdgeInsets(top: 0, left: 59, bottom: 21, right: 59)],
+            "iPhone15,2-Zoom": [UIInterfaceOrientation.portrait: UIEdgeInsets(top: 48, left: 0, bottom: 28, right: 0),
+                                UIInterfaceOrientation.landscapeLeft: UIEdgeInsets(top: 0, left: 48, bottom: 21, right: 48)],
+            // iPhone 14 Pro Max
+            "iPhone15,3": [UIInterfaceOrientation.portrait: UIEdgeInsets(top: 59, left: 0, bottom: 34, right: 0),
+                           UIInterfaceOrientation.landscapeLeft: UIEdgeInsets(top: 0, left: 59, bottom: 21, right: 59)],
+            "iPhone15,3-Zoom": [UIInterfaceOrientation.portrait: UIEdgeInsets(top: 51, left: 0, bottom: 31, right: 0),
+                                UIInterfaceOrientation.landscapeLeft: UIEdgeInsets(top: 0, left: 51, bottom: 21, right: 51)],
             // iPhone 13 mini
             "iPhone14,4": [UIInterfaceOrientation.portrait : UIEdgeInsets(top: 50, left: 0, bottom: 34, right: 0),
                            UIInterfaceOrientation.landscapeLeft: UIEdgeInsets(top: 0, left: 50, bottom: 21, right: 50)],
@@ -480,7 +485,7 @@ open class GKDevice {
         ]
         var deviceKey = deviceModel
         if dict[deviceKey] == nil {
-            deviceKey = "iPhone14,2" // 默认按最新的 iPhone 13 Pro处理，因为新出的设备肯定更大概率与上一代设备相似
+            deviceKey = "iPhone15,2" // 默认按最新的机型处理，因为新出的设备肯定更大概率与上一代设备相似
         }
         if isZoomedMode() {
             deviceKey = deviceKey + "-Zoom"
@@ -524,6 +529,11 @@ extension GKDevice {
     }()
     
     // MARK - Screen
+    /// iPhone 14 Pro Max
+    public static let is67InchScreenAndiPhone14ProMax: Bool = {
+        return width == _67InchAndiPhone14ProMax.width && height == _67InchAndiPhone14ProMax.height
+    }()
+    
     /// iPhone 12 Pro Max
     public static let is67InchScreen: Bool = {
         return width == _67Inch.width && height == _67Inch.height
@@ -533,6 +543,11 @@ extension GKDevice {
     public static let is65InchScreen: Bool = {
         // 由于 iPhone XS Max、iPhone 11 Pro Max 这两款机型和 iPhone XR 的屏幕宽高是一致的，我们通过机器的 Identifier 加以区别
         return (width == _65Inch.width && height == _65Inch.height && (deviceModel == "iPhone11,4" || deviceModel == "iPhone11,6" || deviceModel == "iPhone12,5"))
+    }()
+    
+    /// iPhone 14 Pro
+    public static let is61InchScreenAndiPhone14Pro: Bool = {
+        return width == _61InchAndiPhone14Pro.width && height == _61InchAndiPhone14Pro.height
     }()
     
     /// iPhone 12 / 12 Pro
@@ -576,12 +591,20 @@ extension GKDevice {
         return width == _35Inch.width && height == _35Inch.height
     }()
     
+    public static let _67InchAndiPhone14ProMax: CGSize = {
+       return CGSize(width: 430, height: 932)
+    }()
+    
     public static let _67Inch: CGSize = {
         return CGSize(width: 428, height: 926)
     }()
     
     public static let _65Inch: CGSize = {
         return CGSize(width: 414, height: 896)
+    }()
+    
+    public static let _61InchAndiPhone14Pro: CGSize = {
+        return CGSize(width: 393, height: 852)
     }()
     
     public static let _61InchAndiPhone12Later: CGSize = {

@@ -183,10 +183,10 @@ class ShoppingCarViewController: BaseViewController {
         config.maxSelectCount = 1
         config.maxPreviewCount = 0
         let ps = ZLPhotoPreviewSheet()
-        ps.selectImageBlock = {(images, assets, original) in
-            
-        }
-        ps.showPreview(sender: self)
+//        ps.selectImageBlock = {(images, assets, original) in
+//            
+//        }
+//        ps.showPreview(sender: self)
         
         
     }

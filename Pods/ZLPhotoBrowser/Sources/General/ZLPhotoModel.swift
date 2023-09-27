@@ -44,12 +44,25 @@ public class ZLPhotoModel: NSObject {
     public let ident: String
     
     public let asset: PHAsset
-    
+
     public var type: ZLPhotoModel.MediaType = .unknown
     
     public var duration: String = ""
     
     public var isSelected: Bool = false
+    
+    private var pri_dataSize: ZLPhotoConfiguration.KBUnit?
+    
+    public var dataSize: ZLPhotoConfiguration.KBUnit? {
+        if let pri_dataSize = pri_dataSize {
+            return pri_dataSize
+        }
+        
+        let size = ZLPhotoManager.fetchAssetSize(for: asset)
+        pri_dataSize = size
+        
+        return size
+    }
     
     private var pri_editImage: UIImage?
     
@@ -66,7 +79,7 @@ public class ZLPhotoModel: NSObject {
         }
     }
     
-    public var second: Second {
+    public var second: ZLPhotoConfiguration.Second {
         guard type == .video else {
             return 0
         }
@@ -109,13 +122,11 @@ public class ZLPhotoModel: NSObject {
         case .video:
             return .video
         case .image:
-            if (asset.value(forKey: "filename") as? String)?.hasSuffix("GIF") == true {
+            if asset.zl.isGif {
                 return .gif
             }
-            if #available(iOS 9.1, *) {
-                if asset.mediaSubtypes.contains(.photoLive) {
-                    return .livePhoto
-                }
+            if asset.mediaSubtypes.contains(.photoLive) {
+                return .livePhoto
             }
             return .image
         default:

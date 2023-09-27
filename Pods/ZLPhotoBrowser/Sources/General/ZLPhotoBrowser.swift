@@ -28,7 +28,7 @@ import UIKit
 import Foundation
 import Photos
 
-let version = "4.3.5"
+let version = "4.4.5"
 
 public struct ZLPhotoBrowserWrapper<Base> {
     public let base: Base
@@ -62,13 +62,12 @@ extension ZLPhotoBrowserCompatibleValue {
 }
 
 extension UIViewController: ZLPhotoBrowserCompatible { }
-extension UICollectionViewCell: ZLPhotoBrowserCompatible { }
-extension UITableViewCell: ZLPhotoBrowserCompatible { }
 extension UIColor: ZLPhotoBrowserCompatible { }
 extension UIImage: ZLPhotoBrowserCompatible { }
 extension CIImage: ZLPhotoBrowserCompatible { }
 extension PHAsset: ZLPhotoBrowserCompatible { }
 extension UIFont: ZLPhotoBrowserCompatible { }
+extension UIView: ZLPhotoBrowserCompatible { }
 
 extension Array: ZLPhotoBrowserCompatibleValue { }
 extension String: ZLPhotoBrowserCompatibleValue { }

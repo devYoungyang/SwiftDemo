@@ -64,7 +64,7 @@ public class ZLEditVideoViewController: UIViewController {
     }()
     
     private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = ZLCollectionViewFlowLayout()
         layout.itemSize = ZLEditVideoViewController.frameImageSize
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
@@ -128,9 +128,9 @@ public class ZLEditVideoViewController: UIViewController {
         return queue
     }()
     
-    private var avAssetRequestID = PHInvalidImageRequestID
+    private lazy var avAssetRequestID = PHInvalidImageRequestID
     
-    private var videoRequestID = PHInvalidImageRequestID
+    private lazy var videoRequestID = PHInvalidImageRequestID
     
     private var frameImageCache: [Int: UIImage] = [:]
     
@@ -160,13 +160,13 @@ public class ZLEditVideoViewController: UIViewController {
     
     deinit {
         zl_debugPrint("ZLEditVideoViewController deinit")
-        self.cleanTimer()
-        self.requestFrameImageQueue.cancelAllOperations()
-        if self.avAssetRequestID > PHInvalidImageRequestID {
-            PHImageManager.default().cancelImageRequest(self.avAssetRequestID)
+        cleanTimer()
+        requestFrameImageQueue.cancelAllOperations()
+        if avAssetRequestID > PHInvalidImageRequestID {
+            PHImageManager.default().cancelImageRequest(avAssetRequestID)
         }
-        if self.videoRequestID > PHInvalidImageRequestID {
-            PHImageManager.default().cancelImageRequest(self.videoRequestID)
+        if videoRequestID > PHInvalidImageRequestID {
+            PHImageManager.default().cancelImageRequest(videoRequestID)
         }
     }
     
@@ -266,12 +266,12 @@ public class ZLEditVideoViewController: UIViewController {
         cleanTimer()
         
         let d = CGFloat(interval) * clipRect().width / ZLEditVideoViewController.frameImageSize.width
-        if Second(round(d)) < ZLPhotoConfiguration.default().minSelectVideoDuration {
-            let message = String(format: localLanguageTextValue(.shorterThanMaxVideoDuration), ZLPhotoConfiguration.default().minSelectVideoDuration)
+        if ZLPhotoConfiguration.Second(round(d)) < ZLPhotoConfiguration.default().minSelectVideoDuration {
+            let message = String(format: localLanguageTextValue(.shorterThanMinVideoDuration), ZLPhotoConfiguration.default().minSelectVideoDuration)
             showAlertView(message, self)
             return
         }
-        if Second(round(d)) > ZLPhotoConfiguration.default().maxSelectVideoDuration {
+        if ZLPhotoConfiguration.Second(round(d)) > ZLPhotoConfiguration.default().maxSelectVideoDuration {
             let message = String(format: localLanguageTextValue(.longerThanMaxVideoDuration), ZLPhotoConfiguration.default().maxSelectVideoDuration)
             showAlertView(message, self)
             return
@@ -285,8 +285,7 @@ public class ZLEditVideoViewController: UIViewController {
             return
         }
         
-        let hud = ZLProgressHUD(style: ZLPhotoUIConfiguration.default().hudStyle)
-        hud.show()
+        let hud = ZLProgressHUD.show(toast: .processing)
         
         ZLVideoManager.exportEditVideo(for: avAsset, range: getTimeRange()) { [weak self] url, error in
             hud.hide()
@@ -402,11 +401,27 @@ public class ZLEditVideoViewController: UIViewController {
         RunLoop.main.add(timer!, forMode: .common)
         
         indicator.isHidden = false
-        indicator.frame = CGRect(x: leftSideView.frame.minX, y: leftSideView.frame.minY, width: 2, height: leftSideView.frame.height)
-        indicator.layer.removeAllAnimations()
         
+        
+        let indicatorW: CGFloat = 2
+        let indicatorH = leftSideView.zl.height
+        let indicatorY = leftSideView.zl.top
+        var indicatorFromX = leftSideView.zl.left
+        var indicatorToX = rightSideView.zl.right - indicatorW
+        
+        if isRTL() {
+            swap(&indicatorFromX, &indicatorToX)
+        }
+        
+        let fromFrame = CGRect(x: indicatorFromX, y: indicatorY, width: indicatorW, height: indicatorH)
+        indicator.frame = fromFrame
+        
+        var toFrame = fromFrame
+        toFrame.origin.x = indicatorToX
+        
+        indicator.layer.removeAllAnimations()
         UIView.animate(withDuration: duration, delay: 0, options: [.allowUserInteraction, .curveLinear, .repeat], animations: {
-            self.indicator.frame = CGRect(x: self.rightSideView.frame.maxX - 2, y: self.rightSideView.frame.minY, width: 2, height: self.rightSideView.frame.height)
+            self.indicator.frame = toFrame
         }, completion: nil)
     }
     

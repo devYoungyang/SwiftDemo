@@ -9,6 +9,23 @@
 import Foundation
 import UIKit
 import CommonCrypto
+import CryptoKit
+
+/// 字符串取类型的长度
+public enum StringTypeLength {
+    /// Unicode字符个数
+    case count
+    /// utf8
+    case utf8
+    /// utf16获取长度对应NSString的.length方法
+    case utf16
+    /// unicodeScalars
+    case unicodeScalars
+    /// utf8编码通过字节判断长度
+    case lengthOfBytesUtf8
+    /// 英文 = 1，数字 = 1，汉语 = 2
+    case customCountOfChars
+}
 
 // MARK: - 一：字符串基本的扩展
 public extension JKPOP where Base: ExpressibleByStringLiteral {
@@ -17,6 +34,24 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
     /// 字符串的长度
     var length: Int {
         let string = base as! String
+        return string.count
+    }
+    
+    // MARK: 1.2、字符串取类型的长度
+    /// 字符串取类型的长度
+    func typeLengh(_ type: StringTypeLength) -> Int {
+        let string = base as! String
+        if type == .utf8 {
+            return string.utf8.count
+        } else if type == .utf16 {
+            return string.utf16.count
+        } else if type == .unicodeScalars {
+            return string.unicodeScalars.count
+        } else if type == .lengthOfBytesUtf8 {
+            return string.lengthOfBytes(using: .utf8)
+        }  else if type == .customCountOfChars {
+            return string.jk.customCountOfChars()
+        }
         return string.count
     }
     
@@ -62,7 +97,7 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
     // MARK: 1.7、判断是不是九宫格键盘
     /// 判断是不是九宫格键盘
     func isNineKeyBoard() -> Bool {
-        let other : NSString = "➋➌➍➎➏➐➑➒"
+        let other: NSString = "➋➌➍➎➏➐➑➒"
         let len = (base as! String).count
         for _ in 0..<len {
             if !(other.range(of: base as! String).location != NSNotFound) {
@@ -78,12 +113,14 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
     @discardableResult
     func toViewController() -> UIViewController? {
         // 1.获取类
-        guard let Class: AnyClass = self.toClass() else {
+        guard let trueClass: AnyClass = self.toClass() else {
             return nil
         }
         // 2.通过类创建对象
         // 2.1、将AnyClass 转化为指定的类
-        let vcClass = Class as! UIViewController.Type
+        guard let vcClass = trueClass as? UIViewController.Type else {
+            return nil
+        }
         // 2.2、通过class创建对象
         let vc = vcClass.init()
         return vc
@@ -166,12 +203,14 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
     /// 字符串根据某个字符进行分隔成数组
     /// - Parameter char: 分隔符
     /// - Returns: 分隔后的数组
-    func separatedByString(with char: String) -> Array<Any> {
-        return (base as! String).components(separatedBy: char)
+    func separatedByString(with char: String) -> Array<String> {
+        let arraySubstrings = (base as! String).components(separatedBy: char)
+        let arrayStrings: [String] = arraySubstrings.compactMap { "\($0)" }
+        return arrayStrings
     }
     
     // MARK: 1.16、设备的UUID
-    /// UUID
+    /// 设备的UUID
     static func stringWithUUID() -> String? {
         let uuid = CFUUIDCreate(kCFAllocatorDefault)
         let cfString = CFUUIDCreateString(kCFAllocatorDefault, uuid)
@@ -243,7 +282,7 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
     // MARK: 1.20、计算字符个数（英文 = 1，数字 = 1，汉语 = 2）
     /// 计算字符个数（英文 = 1，数字 = 1，汉语 = 2）
     /// - Returns: 返回字符的个数
-    func countOfChars() -> Int {
+    func customCountOfChars() -> Int {
         var count = 0
         guard (self.base as! String).count > 0 else { return 0 }
         for i in 0...(self.base as! String).count - 1 {
@@ -394,8 +433,8 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
  */
 public extension JKPOP where Base: ExpressibleByStringLiteral {
     
-    // MARK: 3.1、去除字符串前后的 空格
-    /// 去除字符串前后的换行和换行
+    // MARK: 3.1、去除字符串前后的 空格 
+    /// 去除字符串前后的 空格
     var removeBeginEndAllSapcefeed: String {
         let resultString = (base as! String).trimmingCharacters(in: CharacterSet.whitespaces)
         return resultString
@@ -476,7 +515,17 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
         return (base as! String).replacingOccurrences(of: removeString, with: replacingString)
     }
     
-    // MARK: 3.11、使用正则表达式替换某些子串
+    //MARK: 3.11、字符串指定range替换
+    /// 字符串指定range替换
+    /// - Parameters:
+    ///   - range: range
+    ///   - replacingString: 指定范围内新的字符串
+    /// - Returns: 返回新的字符串
+    func replacingCharacters(range: NSRange, replacingString: String = "") -> String {
+        return ((base as! String) as NSString).replacingCharacters(in: range, with: replacingString)
+    }
+    
+    // MARK: 3.12、使用正则表达式替换某些子串
     /// 使用正则表达式替换
     /// - Parameters:
     ///   - pattern: 正则
@@ -491,7 +540,7 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
                                               withTemplate: with)
     }
     
-    // MARK: 3.12、删除指定的字符
+    // MARK: 3.13、删除指定的字符
     /// 删除指定的字符
     /// - Parameter characterString: 指定的字符
     /// - Returns: 返回删除后的字符
@@ -968,13 +1017,15 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
     /// 检查字符串是否包含 Emoji 表情
     /// - Returns: bool
     public func includesEmoji() -> Bool {
-        for i in 0...length {
+        var isInClude: Bool = false
+        for i in 0..<length {
             let c: unichar = ((base as! String) as NSString).character(at: i)
             if (0xD800 <= c && c <= 0xDBFF) || (0xDC00 <= c && c <= 0xDFFF) {
-                return true
+                isInClude = true
+                break
             }
         }
-        return false
+        return isInClude
     }
     
     // MARK: 8.3、去除字符串中的Emoji表情
@@ -1166,7 +1217,7 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
         case (base as! String).endIndex.utf16Offset(in: base as! String)...:
             return (base as! String).endIndex
         default:
-            return (base as! String).index((base as! String).startIndex, offsetBy: original)
+            return (base as! String).index((base as! String).startIndex, offsetBy: original > (base as! String).count ? (base as! String).count : original)
         }
     }
     
@@ -1174,7 +1225,7 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
     /// 隐藏手机号中间的几位
     /// - Parameter combine: 隐藏的字符串(替换的类型)
     /// - Returns: 返回隐藏的手机号
-    public func hidePhone(combine: String = "****") -> String {
+    public func hide12BitsPhone(combine: String = "****") -> String {
         if (base as! String).count >= 11 {
             let pre = self.sub(start: 0, length: 3)
             let post = self.sub(start: 7, length: 4)
@@ -1184,7 +1235,47 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
         }
     }
     
-    // MARK: 9.14、检查字符串是否有特定前缀：hasPrefix
+    // MARK: 9.14、隐藏手机号中间的几位(保留前几位和后几位)
+    /// 隐藏手机号中间的几位(保留前几位和后几位)
+    /// - Parameters:
+    ///   - combine: 中间加密的符号
+    ///   - digitsBefore: 前面保留的位数
+    ///   - digitsAfter: 后面保留的位数
+    /// - Returns: 返回隐藏的手机号
+    public func hidePhone(combine: String = "*", digitsBefore: Int = 2, digitsAfter: Int = 2) -> String {
+        let phoneLength: Int = (base as! String).count
+        if phoneLength > digitsBefore + digitsAfter {
+            let combineCount: Int = phoneLength - digitsBefore - digitsAfter
+            var combineContent: String = ""
+            for _ in 0..<combineCount {
+                combineContent = combineContent + combine
+            }
+            let pre = self.sub(start: 0, length: digitsBefore)
+            let post = self.sub(start: phoneLength - digitsAfter, length: digitsAfter)
+            return pre + "\(combineContent)" + post
+        } else {
+            return (base as! String)
+        }
+    }
+    
+    // MARK: 9.15、隐藏邮箱中间的几位(保留前几位和后几位)
+    /// 隐藏邮箱中间的几位(保留前几位和后几位)
+    /// - Parameters:
+    ///   - combine: 加密的符号
+    ///   - digitsBefore: 前面保留几位
+    ///   - digitsAfter: 后面保留几位
+    /// - Returns: 返回加密后的字符串
+    public func hideEmail(combine: String = "*", digitsBefore: Int = 1, digitsAfter: Int = 1) -> String {
+        let emailArray = (base as! String).jk.separatedByString(with: "@")
+        if emailArray.count == 2 {
+            let fistContent = emailArray[0]
+            let encryptionContent = fistContent.jk.hidePhone(combine: "*", digitsBefore: 1, digitsAfter: 1)
+            return encryptionContent + "@" +  emailArray[1]
+        }
+        return (base as! String)
+    }
+    
+    // MARK: 9.16、检查字符串是否有特定前缀：hasPrefix
     /// 检查字符串是否有特定前缀：hasPrefix
     /// - Parameter prefix: 前缀字符串
     /// - Returns: 结果
@@ -1192,7 +1283,7 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
         return (base as! String).hasPrefix(prefix)
     }
     
-    // MARK: 9.15、检查字符串是否有特定后缀：hasSuffix
+    // MARK: 9.17、检查字符串是否有特定后缀：hasSuffix
     /// 检查字符串是否有特定后缀：hasSuffix
     /// - Parameter suffix: 后缀字符串
     /// - Returns: 结果
@@ -1200,7 +1291,7 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
         return (base as! String).hasSuffix(suffix)
     }
     
-    // MARK: 9.16、是否为0-9之间的数字(字符串的组成是：0-9之间的数字)
+    // MARK: 9.18、是否为0-9之间的数字(字符串的组成是：0-9之间的数字)
     /// 是否为0-9之间的数字(字符串的组成是：0-9之间的数字)
     /// - Returns: 返回结果
     public func isValidNumberValue() -> Bool {
@@ -1211,7 +1302,7 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
         return predicateValue(rgex: rgex)
     }
     
-    // MARK: 9.17、是否为数字或者小数点(字符串的组成是：0-9之间的数字或者小数点即可)
+    // MARK: 9.19、是否为数字或者小数点(字符串的组成是：0-9之间的数字或者小数点即可)
     /// 是否为数字或者小数点(字符串的组成是：0-9之间的数字或者小数点即可)
     /// - Returns: 返回结果
     public func isValidNumberAndDecimalPoint() -> Bool {
@@ -1222,7 +1313,7 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
         return predicateValue(rgex: rgex)
     }
     
-    // MARK: 9.18、验证URL格式是否正确
+    // MARK: 9.20、验证URL格式是否正确
     /// 验证URL格式是否正确
     /// - Returns: 结果
     public func verifyUrl() -> Bool {
@@ -1234,13 +1325,13 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
         return false
     }
     
-    // MARK: 9.19、是否是一个有效的文件URL, "file://Documents/file.txt".isValidFileUrl -> true
+    // MARK: 9.21、是否是一个有效的文件URL, "file://Documents/file.txt".isValidFileUrl -> true
     /// 是否是一个有效的文件URL
     public var isValidFileUrl: Bool {
         return URL(string: base as! String)?.isFileURL ?? false
     }
     
-    // MARK: 9.20、富文本匹配(某些关键词高亮)
+    // MARK: 9.22、富文本匹配(某些关键词高亮)
     /// 富文本匹配(某些关键词高亮)
     /// - Parameters:
     ///   - substring: 匹配的关键字
@@ -1270,13 +1361,11 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
         return attributedString
     }
     
-    //MARK: 9.21、判断是否是视频链接
+    //MARK: 9.23、判断是否是视频链接
     /// 判断是否是视频链接
     public var isVideoUrl: Bool {
-        if (base as! String).hasSuffix("mp4") || (base as! String).hasSuffix("MP4") || (base as! String).hasSuffix("MOV") || (base as! String).hasSuffix("mov") || (base as! String).hasSuffix("mpg") || (base as! String).hasSuffix("mpeg") || (base as! String).hasSuffix("mpg4") || (base as! String).hasSuffix("wm") || (base as! String).hasSuffix("wmx") || (base as! String).hasSuffix("mkv") || (base as! String).hasSuffix("mkv2") || (base as! String).hasSuffix("3gp") || (base as! String).hasSuffix("3gpp") || (base as! String).hasSuffix("wv") || (base as! String).hasSuffix("wvx") || (base as! String).hasSuffix("avi") || (base as! String).hasSuffix("asf") || (base as! String).hasSuffix("fiv") || (base as! String).hasSuffix("swf") || (base as! String).hasSuffix("flv") || (base as! String).hasSuffix("f4v") || (base as! String).hasSuffix("m4u") || (base as! String).hasSuffix("m4v") || (base as! String).hasSuffix("mov") || (base as! String).hasSuffix("movie") || (base as! String).hasSuffix("pvx") || (base as! String).hasSuffix("qt") || (base as! String).hasSuffix("rv") || (base as! String).hasSuffix("vod") || (base as! String).hasSuffix("rm") || (base as! String).hasSuffix("ram") || (base as! String).hasSuffix("rmvb") {
-            return true
-        }
-        return false
+        let videoUrls = ["mp4", "MP4", "MOV", "mov", "mpg", "mpeg", "mpg4", "wm", "wmx", "mkv", "mkv2", "3gp", "3gpp", "wv", "wvx", "avi", "asf", "fiv", "swf", "flv", "f4v", "m4u", "m4v", "mov", "movie", "pvx", "qt", "rv", "vod", "rm", "ram", "rmvb"]
+        return videoUrls.contains { (base as! String).hasSuffix($0) }
     }
     
     // MARK: - private 方法
@@ -1285,22 +1374,13 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
     /// - Parameter year: 年份
     /// - Returns: 返回是否是闰年
     private func isLeapYear(year: Int) -> Bool {
-        if year % 400 == 0 {
-            return true
-        } else if year % 100 == 0 {
-            return false
-        } else if year % 4 == 0 {
-            return true
-        } else {
-            return false
-        }
+        return ((year % 400 == 0) || ((year % 100 != 0) && (year % 4 == 0)))
     }
     
     private func predicateValue(rgex: String) -> Bool {
         let checker: NSPredicate = NSPredicate(format: "SELF MATCHES %@", rgex)
         return checker.evaluate(with: (base as! String))
     }
-    
 }
 
 // MARK: - 十、字符串截取的操作
@@ -1332,7 +1412,7 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
     /// - Returns: 截取后的字符串
     public func sub(start: Int, length: Int = -1) -> String {
         var len = length
-        if len == -1 {
+        if len == -1 || (start + length) > (base as! String).count {
             len = (base as! String).count - start
         }
         let st = (base as! String).index((base as! String).startIndex, offsetBy: start)
@@ -1424,18 +1504,18 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
         return JKRegexHelper.matchRange(base as! String, pattern: subString)
     }
     
-    // MARK: 10.10、在任意位置插入字符串
-    /// 在任意位置插入字符串
+    // MARK: 10.10、在任意位置后面插入字符串
+    /// 在任意位置后面插入字符串
     /// - Parameters:
     ///   - content: 插入内容
     ///   - locat: 插入的位置
     /// - Returns: 添加后的字符串
     public func insertString(content: String, locat: Int) -> String {
-        guard locat < (base as! String).count else {
-            return (base as! String)
+        guard locat < (base as! String).count && locat > 0  else {
+            return locat <= 0 ? (content + (base as! String)) : ((base as! String) + content)
         }
         let str1 = (base as! String).jk.sub(to: locat)
-        let str2 =  (base as! String).jk.sub(from: locat + 1)
+        let str2 = (base as! String).jk.sub(from: locat)
         return str1 + content + str2
     }
     
@@ -1463,6 +1543,43 @@ extension JKPOP where Base: ExpressibleByStringLiteral {
             debugPrint("invalid regex: \(error.localizedDescription)")
             return []
         }
+    }
+    
+    //MARK: 10.12、字符串按照步长拆分为字符串数组
+    /// 字符串拆分为字符串数组
+    /// - Parameter length: 步长
+    /// - Returns: description
+    public func splitStringArray(length: Int) -> [String] {
+        let string = (base as! String)
+        var subStrings: [String] = []
+        guard string.count > length else {
+            return subStrings
+        }
+        // 当前截取的位置
+        var currentLength = 0
+        while currentLength < string.count {
+            if (currentLength + length) > string.count {
+                subStrings.append(string.jk.sub(from: currentLength))
+            } else {
+                let value = string.jk.sub(start: currentLength, length: length)
+                subStrings.append(value)
+            }
+            currentLength = currentLength + 2
+        }
+        return subStrings
+    }
+    
+    // MARK: 10.13、字符串长度不足前面补0
+    /// 字符串长度不足前面补0
+    public func prefixAddZero(_ length: Int) -> String {
+        let string = base as! String
+        guard string.count < length else {
+            return string
+        }
+        let zeros = [Int](0..<(length - 1)).reduce("") { item1, item2 in
+            return item1 + "0"
+        }
+        return zeros + string
     }
 }
 
@@ -1758,37 +1875,57 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
     /// - Parameter md5Type: 加密类型
     /// - Returns: MD5加密后的字符串
     func md5Encrypt(_ md5Type: MD5EncryptType = .lowercase32) -> String {
-        guard (self.base as! String).count > 0 else {
+        guard let content = self.base as? String, content.count > 0 else {
             JKPrint("⚠️⚠️⚠️md5加密无效的字符串⚠️⚠️⚠️")
             return ""
         }
-        // 1.把待加密的字符串转成char类型数据 因为MD5加密是C语言加密
-        let cCharArray = (self.base as! String).cString(using: .utf8)
-        // 2.创建一个字符串数组接受MD5的值
-        var uint8Array = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
-        // 3.计算MD5的值
-        /*
-         第一个参数:要加密的字符串
-         第二个参数: 获取要加密字符串的长度
-         第三个参数: 接收结果的数组
-         */
-        CC_MD5(cCharArray, CC_LONG(cCharArray!.count - 1), &uint8Array)
-        
-        switch md5Type {
-            // 32位小写
-        case .lowercase32:
-            return uint8Array.reduce("") { $0 + String(format: "%02x", $1)}
-            // 32位大写
-        case .uppercase32:
-            return uint8Array.reduce("") { $0 + String(format: "%02X", $1)}
-            // 16位小写
-        case .lowercase16:
-            let tempStr = uint8Array.reduce("") { $0 + String(format: "%02x", $1)}
-            return tempStr.jk.slice(8..<24)
-            // 16位大写
-        case .uppercase16:
-            let tempStr = uint8Array.reduce("") { $0 + String(format: "%02X", $1)}
-            return tempStr.jk.slice(8..<24)
+        if #available(iOS 13, *) {
+            let md5String = Insecure.MD5.hash(data: content.data(using: .utf8)!)
+            switch md5Type {
+                // 32位小写
+            case .lowercase32:
+                return md5String.map {String(format: "%02x", $0)}.joined()
+                // 32位大写
+            case .uppercase32:
+                return md5String.map {String(format: "%02X", $0)}.joined()
+                // 16位小写
+            case .lowercase16:
+                let tempStr = md5String.map {String(format: "%02x", $0)}.joined()
+                return tempStr.jk.slice(8..<24)
+                // 16位大写
+            case .uppercase16:
+                let tempStr = md5String.map {String(format: "%02X", $0)}.joined()
+                return tempStr.jk.slice(8..<24)
+            }
+        } else {
+            // 1.把待加密的字符串转成char类型数据 因为MD5加密是C语言加密
+            let cCharArray = content.cString(using: .utf8)
+            // 2.创建一个字符串数组接受MD5的值
+            var uint8Array = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
+            // 3.计算MD5的值
+            /*
+             第一个参数:要加密的字符串
+             第二个参数: 获取要加密字符串的长度
+             第三个参数: 接收结果的数组
+             */
+            CC_MD5(cCharArray, CC_LONG(cCharArray!.count - 1), &uint8Array)
+            
+            switch md5Type {
+                // 32位小写
+            case .lowercase32:
+                return uint8Array.reduce("") { $0 + String(format: "%02x", $1)}
+                // 32位大写
+            case .uppercase32:
+                return uint8Array.reduce("") { $0 + String(format: "%02X", $1)}
+                // 16位小写
+            case .lowercase16:
+                let tempStr = uint8Array.reduce("") { $0 + String(format: "%02x", $1)}
+                return tempStr.jk.slice(8..<24)
+                // 16位大写
+            case .uppercase16:
+                let tempStr = uint8Array.reduce("") { $0 + String(format: "%02X", $1)}
+                return tempStr.jk.slice(8..<24)
+            }
         }
     }
     
@@ -1847,9 +1984,10 @@ public extension JKPOP where Base: ExpressibleByStringLiteral {
     /// - Parameters:
     ///   - cryptType: 加密类型
     ///   - key: 加密的key
-    ///   - encode: 是编码还是解码
+    ///   - encode: 编码还是解码
+    ///   - encryptIV: 偏移量
     /// - Returns: 编码或者解码后的字符串
-    func scaCrypt(cryptType: DDYSCAType, key: String?, encode: Bool) -> String? {
+    func scaCrypt(cryptType: DDYSCAType, key: String?, encode: Bool, encryptIV: String = "1") -> String? {
         
         let strData = encode ? (self.base as! String).data(using: .utf8) : Data(base64Encoded: (self.base as! String))
         // 创建数据编码后的指针

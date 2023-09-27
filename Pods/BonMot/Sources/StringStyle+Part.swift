@@ -157,15 +157,13 @@ extension StringStyle {
         return style
     }
 
-    // swiftlint:disable function_body_length
-    // swiftlint:disable cyclomatic_complexity
     /// Update the style with the specified style part.
     ///
     /// - Parameter stylePart: The style part with which to update the receiver.
     mutating func update(part stylePart: Part) {
         switch stylePart {
         case let .extraAttributes(attributes):
-            self.extraAttributes = attributes
+            self.add(extraAttributes: attributes)
         case let .font(font):
             self.font = font
         case let .link(link):
@@ -273,7 +271,4 @@ extension StringStyle {
 #endif
         }
     }
-    // swiftlint:enable function_body_length
-    // swiftlint:enable cyclomatic_complexity
-
 }

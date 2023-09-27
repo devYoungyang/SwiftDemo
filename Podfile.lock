@@ -1,7 +1,7 @@
 PODS:
-  - Alamofire (5.6.2)
-  - AttributedString (3.3.2)
-  - BonMot (6.1.1)
+  - Alamofire (5.8.0)
+  - AttributedString (3.3.5)
+  - BonMot (6.1.3)
   - CollectionKit (2.4.0):
     - CollectionKit/Core (= 2.4.0)
   - CollectionKit/Core (2.4.0)
@@ -11,13 +11,13 @@ PODS:
   - EmptyDataSet-Swift (5.0.0)
   - ESTabBarController-swift (2.8.0)
   - FSPagerView (0.8.3)
-  - GKNavigationBarSwift (1.5.1)
+  - GKNavigationBarSwift (1.6.4)
   - HandyJSON (5.0.2)
-  - Hero (1.6.1)
-  - JKSwiftExtension (2.1.10)
+  - Hero (1.6.2)
+  - JKSwiftExtension (2.4.2)
   - JXPagingView/Paging (2.1.2)
   - JXSegmentedView (1.3.0)
-  - Kingfisher (6.3.1)
+  - Kingfisher (7.9.1)
   - MJRefresh (3.7.5)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
@@ -35,22 +35,22 @@ PODS:
     - RxSwift (~> 6.0)
     - WeakMapTable (~> 1.1)
   - RSKPlaceholderTextView (6.1.0)
-  - RxCocoa (6.5.0):
-    - RxRelay (= 6.5.0)
-    - RxSwift (= 6.5.0)
+  - RxCocoa (6.6.0):
+    - RxRelay (= 6.6.0)
+    - RxSwift (= 6.6.0)
   - RxDataSources (5.0.0):
     - Differentiator (~> 5.0)
     - RxCocoa (~> 6.0)
     - RxSwift (~> 6.0)
-  - RxRelay (6.5.0):
-    - RxSwift (= 6.5.0)
-  - RxSwift (6.5.0)
-  - RxSwiftExt (6.0.1):
-    - RxSwiftExt/Core (= 6.0.1)
-    - RxSwiftExt/RxCocoa (= 6.0.1)
-  - RxSwiftExt/Core (6.0.1):
+  - RxRelay (6.6.0):
+    - RxSwift (= 6.6.0)
+  - RxSwift (6.6.0)
+  - RxSwiftExt (6.2.1):
+    - RxSwiftExt/Core (= 6.2.1)
+    - RxSwiftExt/RxCocoa (= 6.2.1)
+  - RxSwiftExt/Core (6.2.1):
     - RxSwift (~> 6.0)
-  - RxSwiftExt/RxCocoa (6.0.1):
+  - RxSwiftExt/RxCocoa (6.2.1):
     - RxCocoa (~> 6.0)
     - RxSwiftExt/Core
   - RxTheme (6.0.0):
@@ -61,8 +61,8 @@ PODS:
     - RxSwift (~> 6.0)
   - SDAutoLayout (2.2.1)
   - SnapKit (5.6.0)
-  - Starscream (4.0.4)
-  - SwiftDate (6.3.1)
+  - Starscream (4.0.6)
+  - SwiftDate (7.0.0)
   - SwifterSwift (5.2.0):
     - SwifterSwift/AppKit (= 5.2.0)
     - SwifterSwift/CoreAnimation (= 5.2.0)
@@ -88,7 +88,7 @@ PODS:
   - SwifterSwift/StoreKit (5.2.0)
   - SwifterSwift/SwiftStdlib (5.2.0)
   - SwifterSwift/UIKit (5.2.0)
-  - SwiftLint (0.48.0)
+  - SwiftLint (0.52.4)
   - SwiftyJSON (5.0.1)
   - Then (3.0.0)
   - Tiercel (3.2.5)
@@ -98,9 +98,9 @@ PODS:
   - YYKit (1.0.9):
     - YYKit/no-arc (= 1.0.9)
   - YYKit/no-arc (1.0.9)
-  - ZLPhotoBrowser (4.3.5):
-    - ZLPhotoBrowser/Core (= 4.3.5)
-  - ZLPhotoBrowser/Core (4.3.5)
+  - ZLPhotoBrowser (4.4.5):
+    - ZLPhotoBrowser/Core (= 4.4.5)
+  - ZLPhotoBrowser/Core (4.4.5)
 
 DEPENDENCIES:
   - Alamofire
@@ -149,7 +149,7 @@ DEPENDENCIES:
   - ZLPhotoBrowser
 
 SPEC REPOS:
-  trunk:
+  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
     - Alamofire
     - AttributedString
     - BonMot
@@ -198,9 +198,9 @@ SPEC REPOS:
     - ZLPhotoBrowser
 
 SPEC CHECKSUMS:
-  Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
-  AttributedString: 5941e9db369ee8c1c607456d507f5534be8d8dde
-  BonMot: 42c7134bab1da1d1d8805b02113635c12f0200cc
+  Alamofire: 0e92e751b3e9e66d7982db43919d01f313b8eb91
+  AttributedString: 6d2d9d65310119556c3b5c6e4ea8d1ca339b703c
+  BonMot: 1534503509ef48d3c4d0fbec2d0ea35f2887b4ea
   CollectionKit: 8f01e7629185bb81072c4aa734d105df5c2d1c8b
   CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
@@ -208,13 +208,13 @@ SPEC CHECKSUMS:
   EmptyDataSet-Swift: eb382c0c87a2d9c678077385a595cec52da38171
   ESTabBarController-swift: 05593a6ad64700b03c0eb60ff625916370aa4136
   FSPagerView: 670405b2f18e2a87fa37f20b00de783e562c25a8
-  GKNavigationBarSwift: 4348306725596c82558282301de0077014048d03
+  GKNavigationBarSwift: 50ccb0c404b2b13aaa015343083938a15805f89d
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
-  Hero: 215865ba3ae41dd9bb08cd6c60a645529c6fc94b
-  JKSwiftExtension: f7c0a6f39e4e2033e08d20a09ec4a3ee34a68811
+  Hero: c69009dbc9e2f0472e081adc644dba05fcedae72
+  JKSwiftExtension: a4b4b8ae8b03a006972ffeda0b6abc075308ebf5
   JXPagingView: 90924b364a2ff7e94db534fad1fa50925ff69ee4
   JXSegmentedView: fec0d335355b6e019c494fe2e030bde8a36d2df6
-  Kingfisher: 016c8b653a35add51dd34a3aba36b580041acc74
+  Kingfisher: 1d14e9f59cbe19389f591c929000332bf70efd32
   MJRefresh: fdf5e979eb406a0341468932d1dfc8b7f9fce961
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   "NSObject+Rx": 61cf1f7306a73dcef8b36649198af0813ec18dfd
@@ -223,19 +223,19 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   ReactorKit: e8b11d6b9c415405f381669b095c154a05b59eca
   RSKPlaceholderTextView: 52f26e643b6f9bbf16f45cd2bbe2181b6dfe090c
-  RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
-  RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
-  RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
-  RxSwiftExt: d61c4b9b06e0a448041b1c659e0f1b5c5a035afc
+  RxRelay: 45eaa5db8ee4fb50e5ebd57deec0159e97fa51e6
+  RxSwift: a4b44f7d24599f674deebd1818eab82e58410632
+  RxSwiftExt: 43aaacb6a4d3c69c55e9d1cf4f79920043d13583
   RxTheme: be60cb14e0544b3cbd574cc37fed35ba9d61aa1f
   RxViewController: 56486fa0afd629a1d6b5ba077f3b8cd9dc31b5d2
   SDAutoLayout: 8bf6b3bbc8b01f775d4defbb4fda2ace805461be
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
-  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
+  Starscream: fb2c4510bebf908c62bd383bcf05e673720e91fd
+  SwiftDate: bbc26e26fc8c0c33fbee8c140c5e8a68293a148a
   SwifterSwift: 334181863c416882d97b7a60c05054d9e4d799e2
-  SwiftLint: 284cea64b6187c5d6bd83e9a548a64104d546447
+  SwiftLint: 1cc5cd61ba9bacb2194e340aeb47a2a37fda00b3
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
   Then: 844265ae87834bbe1147d91d5d41a404da2ec27d
   Tiercel: c0a73f876a72800333b15f4e7e48791f4ad21e90
@@ -243,8 +243,8 @@ SPEC CHECKSUMS:
   TweeTextField: 726de695eead9784f7ed02e22f6944bfcfcca07a
   WeakMapTable: 05c694ce8439a7a9ebabb56187287a63c57673d6
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
-  ZLPhotoBrowser: 329ce19ac36da8fa9a163e878f88479bf1a11461
+  ZLPhotoBrowser: c517bd5ca32909ba67b02b99a558ab90756a8448
 
-PODFILE CHECKSUM: a35db277f09a233f188ed3aac0be9bab5f8a765c
+PODFILE CHECKSUM: 29f2be93c711ed8f5ccfd844829808df32917292
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.13.0

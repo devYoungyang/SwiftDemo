@@ -89,10 +89,59 @@ public extension NSMutableAttributedString {
         addAttributes([.font: font], range: range)
         return self
     }
+    
+    // MARK: 1.6、设置富文本文字的间距
+    /// 设置富文本文字的间距
+    /// - Parameter wordSpaceing: 字体之间的间距
+    /// - Returns: 返回自身
+    @discardableResult
+    func kern(_ wordSpaceing: CGFloat) -> Self {
+        let range = NSMakeRange(0, length)
+        addAttributes([.kern: wordSpaceing], range: range)
+        return self
+    }
+    
+    // MARK: 1.7、设置段落的样式
+    /// 设置段落的样式
+    /// - Parameter style: 样式
+    /// - Returns: 返回自身
+    @discardableResult
+    func paragraphStyle(_ style: NSMutableParagraphStyle) -> Self {
+        let range = NSMakeRange(0, length)
+        addAttributes([.paragraphStyle: style], range: range)
+        return self
+    }
 }
 
 // MARK: - 二、其他的扩展
 public extension NSMutableAttributedString {
-
+    
+    static func createHighlightRichText(content: String, highlightRichTexts: [String], contentTextColor: UIColor, contentFont: UIFont, highlightRichTextColor: UIColor, highlightRichTextFont: UIFont, paraStyle: NSMutableParagraphStyle? = nil) -> NSMutableAttributedString {
+        // 全部内容
+        let allContent: String = content
+        // 全部内容的富文本
+        let allContentAttributedString = NSMutableAttributedString(string: allContent)
+        var allParaStyle = NSMutableParagraphStyle()
+        if let weakParaStyle = paraStyle {
+            allParaStyle = weakParaStyle
+        } else {
+            // 右对齐
+            allParaStyle.alignment = .left
+        }
+        // 整体富文本的设置
+        let allContentDic: [NSAttributedString.Key: Any] = [.font: contentFont, .foregroundColor: contentTextColor, .paragraphStyle: allParaStyle]
+        allContentAttributedString.addAttributes(allContentDic, range: NSRange(location: 0, length: allContent.count))
+        
+        let highlightRichTextAttrsDic: [NSAttributedString.Key: Any] = [.font: highlightRichTextFont, .foregroundColor: highlightRichTextColor, .paragraphStyle: allParaStyle]
+        allContentAttributedString.addAttributes(allContentDic, range: NSRange(location: 0, length: allContent.count))
+        // 单个高亮文本的设置
+        for item in highlightRichTexts {
+            let itemRanges = allContent.jk.nsRange(of: item)
+            if itemRanges.count > 0 {
+                allContentAttributedString.addAttributes(highlightRichTextAttrsDic, range: itemRanges[0])
+            }
+        }
+        return allContentAttributedString
+    }
 }
- 
+
