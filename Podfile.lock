@@ -28,6 +28,9 @@ PODS:
     - RxSwift (~> 6.0)
   - "NSObject+Rx (5.2.2)":
     - RxSwift (~> 6.2)
+  - NVActivityIndicatorView (5.1.1):
+    - NVActivityIndicatorView/Base (= 5.1.1)
+  - NVActivityIndicatorView/Base (5.1.1)
   - ObjectMapper (4.2.0)
   - PKHUD (5.3.0)
   - ReachabilitySwift (5.0.0)
@@ -123,6 +126,7 @@ DEPENDENCIES:
   - Moya
   - Moya/RxSwift
   - "NSObject+Rx"
+  - NVActivityIndicatorView
   - ObjectMapper
   - PKHUD (~> 5.0)
   - ReachabilitySwift
@@ -149,7 +153,7 @@ DEPENDENCIES:
   - ZLPhotoBrowser
 
 SPEC REPOS:
-  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
+  trunk:
     - Alamofire
     - AttributedString
     - BonMot
@@ -170,6 +174,7 @@ SPEC REPOS:
     - MJRefresh
     - Moya
     - "NSObject+Rx"
+    - NVActivityIndicatorView
     - ObjectMapper
     - PKHUD
     - ReachabilitySwift
@@ -218,6 +223,7 @@ SPEC CHECKSUMS:
   MJRefresh: fdf5e979eb406a0341468932d1dfc8b7f9fce961
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   "NSObject+Rx": 61cf1f7306a73dcef8b36649198af0813ec18dfd
+  NVActivityIndicatorView: 1f6c5687f1171810aa27a3296814dc2d7dec3667
   ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
@@ -245,6 +251,6 @@ SPEC CHECKSUMS:
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
   ZLPhotoBrowser: c517bd5ca32909ba67b02b99a558ab90756a8448
 
-PODFILE CHECKSUM: 29f2be93c711ed8f5ccfd844829808df32917292
+PODFILE CHECKSUM: 356b26c1ce7eca5b658881a65aacb0330c03f8c9
 
 COCOAPODS: 1.13.0

@@ -31,6 +31,7 @@ class Person: NSObject, BaseProtocol {
             
         }
     }
+    
 //    class var weight: Float
 //    static var height: Float
     
